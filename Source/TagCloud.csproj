@@ -149,11 +149,11 @@
   </ItemGroup>
   <ItemGroup>
     <!-- DNN platform assemblies: compile against them, but don't copy them into the output (the DNN host provides them) -->
-    <PackageReference Include="DotNetNuke.Core" Version="10.4.1" ExcludeAssets="runtime" />
-    <PackageReference Include="DotNetNuke.Abstractions" Version="10.4.1" ExcludeAssets="runtime" />
-    <PackageReference Include="DotNetNuke.DependencyInjection" Version="10.4.1" ExcludeAssets="runtime" />
-    <PackageReference Include="DotNetNuke.Web" Version="10.4.1" ExcludeAssets="runtime" />
-    <PackageReference Include="DotNetNuke.Web.Client" Version="10.4.1" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.Core" Version="10.4.0" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.Abstractions" Version="10.4.0" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.DependencyInjection" Version="10.4.0" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.Web" Version="10.4.0" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.Web.Client" Version="10.4.0" ExcludeAssets="runtime" />
     <!-- DNN 10.4.1 is compiled against 10.0.12, but its packages only declare 8.0.0; pin it to avoid version conflicts -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" ExcludeAssets="runtime" />
     <PackageReference Include="SonarAnalyzer.CSharp">
@@ -206,21 +206,9 @@
     <Content Include="Installation\ReleaseNotes.html" />
     <Content Include="Resources\cloud.svg" />
     <Content Include="Resources\exclude.svg" />
-    <Content Include="Resources\images\AlphaBar.png" />
-    <Content Include="Resources\images\bar-opacity.png" />
-    <Content Include="Resources\images\Bars.png" />
-    <Content Include="Resources\images\map-opacity.png" />
-    <Content Include="Resources\images\mappoint.gif" />
-    <Content Include="Resources\images\Maps.png" />
-    <Content Include="Resources\images\NoColor.png" />
-    <Content Include="Resources\images\picker.gif" />
-    <Content Include="Resources\images\preview-opacity.png" />
-    <Content Include="Resources\images\rangearrows.gif" />
-    <Content Include="Resources\js\jpicker-1.1.6.min.js" />
     <Content Include="Resources\js\jquery.tagcanvas.min.js" />
     <Content Include="Resources\js\jquery.wordcloud.js" />
     <Content Include="Resources\license.txt" />
-    <Content Include="Resources\module.css" />
     <Content Include="Resources\settings.svg" />
     <Content Include="Resources\skins\Blue.css" />
     <Content Include="Resources\skins\Colored.css" />

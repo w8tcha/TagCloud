@@ -1,6 +1,6 @@
 <dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="TagCloud" type="Module" version="02.02.09">
+    <package name="TagCloud" type="Module" version="02.02.10">
       <friendlyName>TagCloud</friendlyName>
       <description>
         &lt;h1&gt;TagCloud &lt;/h1&gt;
@@ -17,7 +17,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">10.04.01</dependency>
+        <dependency type="CoreVersion">10.04.00</dependency>
       </dependencies>
       <components>
         <component type="Module">
@@ -97,6 +97,58 @@
             <basePath>bin</basePath>
             <file>
               <name>VRK.Controls.dll</name>
+            </file>
+          </files>
+        </component>
+        <component type="Cleanup" version="02.02.10">
+          <files>
+            <basePath>DesktopModules\TagCloud</basePath>
+            <file>
+              <name>module.css</name>
+            </file>
+            <file>
+              <path>js</path>
+              <name>jpicker-1.1.6.min.js</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>AlphaBar.png</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>bar-opacity.png</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>Bars.png</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>map-opacity.png</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>mappoint.gif</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>Maps.png</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>NoColor.png</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>picker.gif</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>preview-opacity.png</name>
+            </file>
+            <file>
+              <path>images</path>
+              <name>rangearrows.gif</name>
             </file>
           </files>
         </component>

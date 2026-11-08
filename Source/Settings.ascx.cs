@@ -57,7 +57,6 @@ using DNN.Modules.Objects;
 
 using DotNetNuke.Abstractions;
 using DotNetNuke.Abstractions.Application;
-using DotNetNuke.Abstractions.ClientResources;
 using DotNetNuke.Collections;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Content.Common;
@@ -169,11 +168,6 @@ namespace DNN.Modules
         private readonly IApplicationStatusInfo appStatus;
 
         /// <summary>
-        /// The client resource controller.
-        /// </summary>
-        private readonly IClientResourceController clientResourceController;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Settings"/> class.
         /// </summary>
         protected Settings()
@@ -182,7 +176,6 @@ namespace DNN.Modules
             this.javaScript = this.DependencyProvider.GetRequiredService<IJavaScriptLibraryHelper>();
             this.hostSettings = this.DependencyProvider.GetRequiredService<IHostSettings>();
             this.appStatus = this.DependencyProvider.GetRequiredService<IApplicationStatusInfo>();
-            this.clientResourceController = this.DependencyProvider.GetRequiredService<IClientResourceController>();
         }
 
         /// <summary>
@@ -390,81 +383,60 @@ namespace DNN.Modules
         }
 
         /// <summary>
-        /// Add the needed Javascript for the Color Picker
+        /// Converts a stored color setting (hex without '#') to the "#rrggbb" format required by input type="color".
+        /// </summary>
+        /// <param name="storedValue">The stored setting value.</param>
+        /// <param name="defaultValue">The default hex value (without '#') used if the stored value is invalid.</param>
+        /// <returns>The color in "#rrggbb" format.</returns>
+        private static string ToColorInputValue(string storedValue, string defaultValue)
+        {
+            var hex = (storedValue ?? string.Empty).Trim().TrimStart('#');
+
+            if (hex.Length == 3 && IsHex(hex))
+            {
+                hex = string.Concat(hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]);
+            }
+
+            if (hex.Length != 6 || !IsHex(hex))
+            {
+                hex = defaultValue;
+            }
+
+            return $"#{hex.ToLowerInvariant()}";
+        }
+
+        /// <summary>
+        /// Converts the "#rrggbb" value posted by input type="color" to the stored format (hex without '#').
+        /// </summary>
+        /// <param name="inputValue">The posted value.</param>
+        /// <returns>The hex color without '#'.</returns>
+        private static string FromColorInputValue(string inputValue)
+        {
+            return (inputValue ?? string.Empty).Trim().TrimStart('#').ToLowerInvariant();
+        }
+
+        /// <summary>
+        /// Checks if the value only contains hexadecimal characters.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>True if all characters are hexadecimal digits.</returns>
+        private static bool IsHex(string value)
+        {
+            return value.All(Uri.IsHexDigit);
+        }
+
+        /// <summary>
+        /// Add the needed Javascript for the settings tabs and dialogs.
         /// </summary>
         /// <param name="restoreTab">The restore Tab.</param>
         /// <param name="panelOpenSelector">The panel open selector.</param>
         private void AddJavaScript(int restoreTab, string panelOpenSelector = null)
         {
-            this.AddTabScript(restoreTab, panelOpenSelector);
-
-            var csType = typeof(Page);
-
-            var sbColorPScript = new StringBuilder();
-
-            sbColorPScript.Append("$(document).ready(function() {");
-
-            sbColorPScript.Append(
-                "jQuery.fn.jPicker.defaults.window.position.y=($(\".TagCloudLogo\").position().top) + 200 + 'px';");
-            sbColorPScript.AppendFormat(
-                "jQuery.fn.jPicker.defaults.images.clientPath='{0}';",
-                this.ResolveUrl("images/"));
-
-            // Tcolor
-            sbColorPScript.AppendFormat(
-                "$(\"#{0}\").jPicker({{window:{{title:'{1}' }} }});",
-                this.tbTcolor.ClientID,
-                Localization.GetString("lblTcolor.Help", this.LocalResourceFile));
-
-            // Tcolor2
-            sbColorPScript.AppendFormat(
-                "$(\"#{0}\").jPicker({{window:{{title:'{1}' }} }});",
-                this.tbTcolor2.ClientID,
-                Localization.GetString("lblTcolor2.Help", this.LocalResourceFile));
-
-            // Hicolor
-            sbColorPScript.AppendFormat(
-                "$(\"#{0}\").jPicker({{window:{{title:'{1}' }} }});",
-                this.tbHicolor.ClientID,
-                Localization.GetString("lblHicolor.Help", this.LocalResourceFile));
-
-            // BgColor
-            if (this.tbBgcolor.Enabled)
-            {
-                sbColorPScript.AppendFormat(
-                    "$(\"#{0}\").jPicker({{window:{{title:'{1}' }} }});",
-                    this.tbBgcolor.ClientID,
-                    Localization.GetString("lblBgcolor.Help", this.LocalResourceFile));
-                sbColorPScript.Append("});");
-            }
-            else
-            {
-                sbColorPScript.Append("});");
-            }
-
-            ScriptManager.RegisterStartupScript(this, csType, this.ID, sbColorPScript.ToString(), true);
-        }
-
-        /// <summary>
-        /// The add tab script.
-        /// </summary>
-        /// <param name="restoreTab">The restore Tab.</param>
-        /// <param name="panelOpenSelector">The panel open selector.</param>
-        private void AddTabScript(int restoreTab, string panelOpenSelector = null)
-        {
-            this.clientResourceController.CreateStylesheet(this.ResolveUrl("module.css")).Register();
-
             var csType = typeof(Page);
 
             javaScript.RequestRegistration(CommonJs.jQuery);
 
             javaScript.RequestRegistration(CommonJs.DnnPlugins);
-
-            ScriptManager.RegisterClientScriptInclude(
-                this,
-                csType,
-                "jqueryColorPicker",
-                this.ResolveUrl("js/jpicker-1.1.6.min.js"));
 
             var sbDialogJs = new StringBuilder();
 
@@ -2059,50 +2031,21 @@ namespace DNN.Modules
                     string.Empty);
             }
 
-            if (!string.IsNullOrEmpty((string)this.Settings["tcolor"]))
-            {
-                this.tbTcolor.Text = (string)this.Settings["tcolor"];
-            }
-            else
-            {
-                this.tbTcolor.Text = "000000";
-            }
+            this.tbTcolor.Text = ToColorInputValue((string)this.Settings["tcolor"], "000000");
+            this.tbTcolor2.Text = ToColorInputValue((string)this.Settings["tcolor2"], "000000");
+            this.tbHicolor.Text = ToColorInputValue((string)this.Settings["hicolor"], "42a5ff");
 
-            if (!string.IsNullOrEmpty((string)this.Settings["tcolor2"]))
-            {
-                this.tbTcolor2.Text = (string)this.Settings["tcolor2"];
-            }
-            else
-            {
-                this.tbTcolor2.Text = "000000";
-            }
+            var bgColor = (string)this.Settings["bgcolor"];
 
-            if (!string.IsNullOrEmpty((string)this.Settings["hicolor"]))
+            if (string.IsNullOrEmpty(bgColor) || bgColor.Equals("transparent", StringComparison.OrdinalIgnoreCase))
             {
-                this.tbHicolor.Text = (string)this.Settings["hicolor"];
-            }
-            else
-            {
-                this.tbHicolor.Text = "42a5ff";
-            }
-
-            if (!string.IsNullOrEmpty((string)this.Settings["bgcolor"]))
-            {
-                this.tbBgcolor.Text = (string)this.Settings["bgcolor"];
-            }
-            else
-            {
-                this.tbBgcolor.Text = "transparent";
-            }
-
-            if (this.tbBgcolor.Text.ToLower().Equals("transparent"))
-            {
-                this.tbBgcolor.Text = string.Empty;
+                this.tbBgcolor.Text = "#ffffff";
                 this.tbBgcolor.Enabled = false;
                 this.cbTransparent.Checked = true;
             }
             else
             {
+                this.tbBgcolor.Text = ToColorInputValue(bgColor, "ffffff");
                 this.tbBgcolor.Enabled = true;
                 this.cbTransparent.Checked = false;
             }
@@ -2381,17 +2324,17 @@ namespace DNN.Modules
 
             if (!string.IsNullOrEmpty(this.tbTcolor.Text))
             {
-                this.SaveSetting(modController, "tcolor", this.tbTcolor.Text);
+                this.SaveSetting(modController, "tcolor", FromColorInputValue(this.tbTcolor.Text));
             }
 
             if (!string.IsNullOrEmpty(this.tbTcolor2.Text))
             {
-                this.SaveSetting(modController, "tcolor2", this.tbTcolor2.Text);
+                this.SaveSetting(modController, "tcolor2", FromColorInputValue(this.tbTcolor2.Text));
             }
 
             if (!string.IsNullOrEmpty(this.tbHicolor.Text))
             {
-                this.SaveSetting(modController, "hicolor", this.tbHicolor.Text);
+                this.SaveSetting(modController, "hicolor", FromColorInputValue(this.tbHicolor.Text));
             }
 
             if (this.cbTransparent.Checked)
@@ -2402,7 +2345,7 @@ namespace DNN.Modules
             {
                 if (!string.IsNullOrEmpty(this.tbBgcolor.Text))
                 {
-                    this.SaveSetting(modController, "bgcolor", this.tbBgcolor.Text);
+                    this.SaveSetting(modController, "bgcolor", FromColorInputValue(this.tbBgcolor.Text));
                 }
             }
 

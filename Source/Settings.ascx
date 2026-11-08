@@ -109,19 +109,19 @@
     </div>
     <div class="dnnFormItem">
         <dnn:label id="lblTcolor" runat="server" ResourceKey="lblTcolor" controlname="tbTcolor" suffix=":" CssClass="SubHead"></dnn:label>
-        #<asp:TextBox id="tbTcolor" runat="server" Width="100px" />
+        <asp:TextBox id="tbTcolor" runat="server" TextMode="Color" />
     </div>
     <div class="dnnFormItem">
         <dnn:label id="lblTcolor2" runat="server" ResourceKey="lblTcolor2" controlname="tbTcolor2" suffix=":" CssClass="SubHead"></dnn:label>
-        #<asp:TextBox id="tbTcolor2" runat="server" Width="100px" />
+        <asp:TextBox id="tbTcolor2" runat="server" TextMode="Color" />
    </div>
    <div class="dnnFormItem">
         <dnn:label id="lblHicolor" runat="server" ResourceKey="lblHicolor" controlname="tbHicolor" suffix=":" CssClass="SubHead"></dnn:label>
-        #<asp:TextBox id="tbHicolor" runat="server" Width="100px" />
+        <asp:TextBox id="tbHicolor" runat="server" TextMode="Color" />
    </div>
    <div class="dnnFormItem">
         <dnn:label id="lblBgcolor" runat="server" ResourceKey="lblBgcolor" controlname="tbBgcolor" suffix=":" CssClass="SubHead"></dnn:label>
-        #<asp:TextBox id="tbBgcolor" runat="server" Width="100px" />
+        <asp:TextBox id="tbBgcolor" runat="server" TextMode="Color" />
     </div>
     <div class="dnnFormItem">
         <dnn:label id="Label1" runat="server" ResourceKey="cbTransparent" controlname="cbTransparent" suffix="?" CssClass="SubHead"></dnn:label>
