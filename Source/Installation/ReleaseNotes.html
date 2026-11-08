@@ -34,6 +34,8 @@
         <li>Fixed the export of custom tags creating an empty file or failing, and the import failing for files in secure or database folders</li>
         <li>Fixed saving an exclusion word changing the wrong word, and several errors when editing tags and translations</li>
         <li>Invalid values in the settings are no longer saved and no longer break the module</li>
+        <li>Security: the tag separator, the canvas weight size and the tag texts in the settings are no longer rendered unencoded (markup in the tag separator is now shown as text, entities like &amp;middot; still work)</li>
+        <li>Fixed tags with special characters (e.g. C# or Q&amp;A) linking to the wrong search, and the taxonomy search link without friendly URLs</li>
     </ul>
 </body>
 </html>

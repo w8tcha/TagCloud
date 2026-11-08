@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Web;
@@ -403,7 +404,13 @@ namespace DNN.Modules
             canvasScript.Append("weight : true,");
             canvasScript.Append("weightFrom : 'data-weight',");
             canvasScript.AppendFormat("weightMode : '{0}',", this.settings.WeightMode);
-            canvasScript.AppendFormat("weightSize : '{0}'", this.settings.WeightSize);
+            // Emitted as number, the setting is never written as text into the script
+            var weightSize = ParseDouble(this.settings.WeightSize, 1.0);
+
+            canvasScript.AppendFormat(
+                CultureInfo.InvariantCulture,
+                "weightSize : {0}",
+                weightSize > 0 ? weightSize : 1.0);
 
             // TagCanvas throws if the browser has no canvas support, the tag list is then shown as fallback
             canvasScript.Append("}); } catch (e) { }");
@@ -534,6 +541,17 @@ namespace DNN.Modules
         }
 
         /// <summary>
+        /// Appends a query string to a URL, with '&amp;' if the URL already has a query string (no friendly URLs).
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="queryString">The query string, e.g. "Tag=value".</param>
+        /// <returns>The URL with query string.</returns>
+        private static string AppendQueryString(string url, string queryString)
+        {
+            return $"{url}{(url.Contains("?") ? "&" : "?")}{queryString}";
+        }
+
+        /// <summary>
         /// Parses a whole number setting culture independent. Decimal values (e.g. "8.5") are rounded.
         /// </summary>
         /// <param name="value">The setting value.</param>
@@ -617,7 +635,7 @@ namespace DNN.Modules
                         entry = new CloudItem(
                             Utility.RemoveIllegalCharacters(tag.Text),
                             tag.Weight,
-                            this.navigationManager.NavigateURL(this.settings.AfTab, string.Empty, "afv=search", $"aftg={tag.Text}"),
+                            this.navigationManager.NavigateURL(this.settings.AfTab, string.Empty, "afv=search", $"aftg={Uri.EscapeDataString(tag.Text)}"),
                             tag.Text);
                     }
                     else
@@ -778,7 +796,7 @@ namespace DNN.Modules
                             this.navigationManager.NavigateURL(
                                 this.settings.VentrianTabSimple,
                                 string.Empty,
-                                $"Tag={tag.Name}",
+                                $"Tag={Uri.EscapeDataString(tag.Name)}",
                                 $"Tags={simpleGalleryInstance.TabModuleID}"),
                             tag.Name);
                     }
@@ -820,11 +838,9 @@ namespace DNN.Modules
                     var entry = new CloudItem(
                         Utility.RemoveIllegalCharacters(term.Name),
                         weight,
-                        string.Format(
-                            "{0}?{2}{1}",
+                        AppendQueryString(
                             this.navigationManager.NavigateURL(this.settings.SearchTabId),
-                            Utility.RemoveIllegalCharacters(term.Name),
-                            this.settings.SearchTaxQueryString),
+                            this.settings.SearchTaxQueryString + Uri.EscapeDataString(Utility.RemoveIllegalCharacters(term.Name))),
                         term.Description);
 
                     list.Add(entry);
@@ -920,7 +936,9 @@ namespace DNN.Modules
             // Add Tag Separator
             if (!string.IsNullOrEmpty(this.settings.TagSeparator))
             {
-                this.c1.ItemSeparator = this.settings.TagSeparator;
+                // The separator is rendered as HTML: entities (e.g. &middot; or &nbsp;|) keep working,
+                // markup is shown as text, so the setting can't inject scripts into the page
+                this.c1.ItemSeparator = WebUtility.HtmlEncode(WebUtility.HtmlDecode(this.settings.TagSeparator));
             }
 
             if (this.settings.RenderUl)

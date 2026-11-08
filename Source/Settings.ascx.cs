@@ -394,6 +394,18 @@ namespace DNN.Modules
         }
 
         /// <summary>
+        /// Gets the decoded text of a data grid cell, the grids contain HTML encoded values.
+        /// </summary>
+        /// <param name="cell">The cell.</param>
+        /// <returns>The cell text, empty for an empty cell.</returns>
+        private static string GetCellText(TableCell cell)
+        {
+            var text = cell.Text;
+
+            return string.IsNullOrEmpty(text) || text.Equals("&nbsp;") ? string.Empty : HttpUtility.HtmlDecode(text);
+        }
+
+        /// <summary>
         /// Parses a whole number culture independent.
         /// </summary>
         /// <param name="value">The value.</param>
@@ -732,8 +744,9 @@ namespace DNN.Modules
                 var drNewRow = dtTags.NewRow();
 
                 drNewRow["TagID"] = tag.TagId.ToString();
-                drNewRow["Tag"] = tag.Tag;
-                drNewRow["TagUrl"] = tag.Url;
+                // BoundColumns don't encode, the values are rendered as HTML
+                drNewRow["Tag"] = HttpUtility.HtmlEncode(tag.Tag);
+                drNewRow["TagUrl"] = HttpUtility.HtmlEncode(tag.Url);
                 drNewRow["Weight"] = tag.Weight.ToString();
 
                 dtTags.Rows.Add(drNewRow);
@@ -789,8 +802,8 @@ namespace DNN.Modules
                 drNewRow["TagID"] = tagId;
                 drNewRow["Locale"] = language.Code;
 
-                drNewRow["Tag"] = tag;
-                drNewRow["TagUrl"] = tagUrl;
+                drNewRow["Tag"] = HttpUtility.HtmlEncode(tag);
+                drNewRow["TagUrl"] = HttpUtility.HtmlEncode(tagUrl);
 
                 // Fill With SQL Values
                 var language1 = language;
@@ -799,8 +812,8 @@ namespace DNN.Modules
 
                 if (locale != null)
                 {
-                    drNewRow["Tag"] = locale.TagMl;
-                    drNewRow["TagUrl"] = locale.UrlMl;
+                    drNewRow["Tag"] = HttpUtility.HtmlEncode(locale.TagMl);
+                    drNewRow["TagUrl"] = HttpUtility.HtmlEncode(locale.UrlMl);
                 }
 
                 dtLocales.Rows.Add(drNewRow);
@@ -1088,12 +1101,10 @@ namespace DNN.Modules
                         this.iBTagAdd.Visible = false;
                         this.iBTagEditCancel.Visible = true;
 
-                        this.tbCustomTag.Text = e.Item.Cells[4].Text;
+                        this.tbCustomTag.Text = GetCellText(e.Item.Cells[4]);
 
                         // Don't keep the URL of a previously edited tag
-                        this.ctlTagUrl.Url = e.Item.Cells[5].Text.Equals("&nbsp;")
-                                                 ? string.Empty
-                                                 : e.Item.Cells[5].Text;
+                        this.ctlTagUrl.Url = GetCellText(e.Item.Cells[5]);
 
                         this.lTagId.Text = e.Item.Cells[0].Text;
 
@@ -1173,14 +1184,14 @@ namespace DNN.Modules
                         this.iBTagAdd.Visible = false;
                         this.iBTagEditCancel.Visible = true;
 
-                        if (!e.Item.Cells[5].Text.Equals("&nbsp;"))
+                        if (!string.IsNullOrEmpty(GetCellText(e.Item.Cells[5])))
                         {
-                            this.tbCustomTag.Text = e.Item.Cells[5].Text;
+                            this.tbCustomTag.Text = GetCellText(e.Item.Cells[5]);
                         }
 
-                        if (!e.Item.Cells[6].Text.Equals("&nbsp;"))
+                        if (!string.IsNullOrEmpty(GetCellText(e.Item.Cells[6])))
                         {
-                            this.ctlTagUrl.Url = e.Item.Cells[6].Text;
+                            this.ctlTagUrl.Url = GetCellText(e.Item.Cells[6]);
                         }
 
                         this.lTagId.Text = e.Item.Cells[0].Text;
@@ -2396,7 +2407,10 @@ namespace DNN.Modules
 
             this.SaveSetting(modController, "WeightMode", this.CanvasWeightMode.SelectedValue);
 
-            this.SaveSetting(modController, "WeightSize", this.CanvasWeightSize.Text);
+            if (TryParseDouble(this.CanvasWeightSize.Text, out var weightSize) && weightSize > 0)
+            {
+                this.SaveSetting(modController, "WeightSize", weightSize.ToString(CultureInfo.InvariantCulture));
+            }
 
             this.SaveSetting(modController, "RenderMode", this.RenderModeType.SelectedValue);
 
