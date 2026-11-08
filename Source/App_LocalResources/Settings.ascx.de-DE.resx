@@ -204,7 +204,7 @@
     <value>Allgemeine Einstellugen</value>
   </data>
   <data name="lFlashOpt.Text" xml:space="preserve">
-    <value>3D HTML5/Word Cloud/Flash Einstellungen</value>
+    <value>3D HTML5/Word Cloud Einstellungen</value>
   </data>
   <data name="rangevalidator1.Text" xml:space="preserve">
     <value>Geschwindigkeitswert muss zwischen 25 und 500 liegen.</value>

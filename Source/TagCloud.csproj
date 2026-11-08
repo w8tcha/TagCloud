@@ -251,7 +251,9 @@
     <Content Include="App_LocalResources\TagCloud.ascx.resx">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_LocalResources\Settings.ascx.pl-PL.resx" />
+    <Content Include="App_LocalResources\Settings.ascx.pl-PL.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_LocalResources\TagCloud.ascx.pl-PL.resx" />
     <EmbeddedResource Include="VRK.Controls\SR.resx" />
     <None Include="BuildScripts\ModulePackage.targets">

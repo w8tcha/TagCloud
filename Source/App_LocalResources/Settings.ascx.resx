@@ -216,7 +216,7 @@
     <value>Basic Settings</value>
   </data>
   <data name="lFlashOpt.Text" xml:space="preserve">
-    <value>3D HTML5/Word Cloud/Flash Settings</value>
+    <value>3D HTML5/Word Cloud Settings</value>
   </data>
   <data name="rangevalidator1.Text" xml:space="preserve">
     <value>Speed Value must be between 25 and 500.</value>
