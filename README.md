@@ -1,80 +1,113 @@
-# TagCloud
-This DNN (formerly DotNetNuke) Module displays a Tag as an HTML5 Canvas 3D Cloud, WordCloud ("Wordle" inspired Tag Cloud), or as Plain HTML with Skinning as an list of hyper links in varying styles depending on a weight (Like a Standard Web 2.0 Tag Cloud). 
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/images/TagCloudLogo-dark.png">
+    <img src="Source/Resources/TagCloudLogo.png" alt="TagCloud" width="455">
+  </picture>
+</h1>
 
-The Tags are generated from...
-* An List of Custom (Localized) Tags you can define
-* From the Dnn Taxonomy Terms
-* Show Tags from Ventrian NewsArticles Module
-* Show Tags from Ventrian SimpleGallery Module
-* Show Tags from ActiveForums Module
-* Show Tags from Core DotNetNuke Blog Module (You can select one or more Blogs, or all Blogs of the Portal as Source)
+<p align="center">
+  <a href="https://github.com/w8tcha/TagCloud/releases/latest"><img src="https://img.shields.io/github/v/release/w8tcha/TagCloud" alt="Latest release"></a>
+  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/w8tcha/TagCloud" alt="License"></a>
+  <img src="https://img.shields.io/badge/DNN-10.4.1%2B-blue" alt="DNN 10.4.1+">
+</p>
+
+A tag cloud module for [DNN](https://www.dnnsoftware.com/) (formerly DotNetNuke). It displays tags from various sources as an animated 3D cloud, a "Wordle" style word cloud or a skinnable HTML tag cloud, where each tag is styled according to its weight. Clicking a tag opens the portal search with all pages for that tag.
+
+| 3D Canvas Cloud | Word Cloud |
+| :---: | :---: |
+| ![3D canvas tag cloud](screenshots/TagCloudCanvas.jpg) | ![Word cloud](screenshots/dnnTagCloudWordle.png) |
 
 ## Features
-### 3D Cloud
-By default the Tag Cloud is rendered as a plain HTML 5 3D Cloud, WordCloud ("Wordle" inspired Tag Cloud) or as Plain HTML with Skinning. You can customize the 3D Cloud, you can set... 
-* The Fore Color 
-* Highlight Color 
-* Background Color or Transparent
-* Speed 
-* Width and Height
-* Set Text Font of Canvas Tags
-* Set Weight Method to use for displaying tag weights inside the Canvas Tag Cloud. Should be one of size, colour or both.
 
+### Render modes
 
-### Appearance (Html Skins)
-This Module is shipped with 15 skins. The skins can be easily switched in the Module Settings. Users can easily create own skins because the semantic markup provides easy and flexible styling using CSS.
+- **HTML5 Canvas (3D)**: a rotating 3D sphere of tags that reacts to the mouse. Font, text color, highlight color, background color (or transparent) and size are configurable. Tag weights can be shown by size, colour or both, with an adjustable size multiplier.
+- **Word Cloud**: a "Wordle" inspired cloud drawn on a canvas. You can choose the shape (circle, cardioid, diamond, triangle, pentagon or star), grid size, ellipticity, weight factor, minimum font size and whether gaps between words may be filled.
+- **Basic HTML**: a list of links styled with CSS. It ships with 18 skins, can be rendered as an unordered list (`<ul>`) or plain links with a custom separator, and can optionally show the weight next to each tag.
 
+The canvas and word cloud renderers are plain JavaScript and do not require jQuery.
 
-### Filtering
-The Module allows an easy way of organizing the tags, by setting a couple of properties. This way the user can choose which tags and in what order they will appear in the cloud. The items in the TagCloud can be filtered by setting either of the following properties: 
-* Minimum Tag Weight - You can define the Minimum Occurrence of the Word to show as Tag
-* Minimum Tag Weight - Maximum Number of Items Shows in the TagCloud
-* Sort Tags - Option to sort the Tags alphabetically or based on their weight, in ascending or descending order, or random.
-* Render Tag Item Weight - Enabling this property renders a number next to each tag signifying its weight.
+### Tag sources
 
+Several sources can be combined:
 
-### Sorting
-By default the tags are sorted by Alphabet Ascending. The user can choose to sort them randomly, or alphabetically or based on their weight, in ascending or descending order.  Possible options to sort the items in the cloud are: Not Sorted, Alphabetic Ascending, Alphabetic Descending, Weighted Ascending and Weighted Descending. 
+- **Custom tags**: your own list of tags, each with a weight and URL. Tags can be localized per language and imported from or exported to XML.
+- **DNN taxonomy**: terms of all pages or only of the current page, limited to selected vocabularies.
+- **Ventrian News Articles**, **Ventrian Simple Gallery** and **Active Forums**: tags of these modules. The sources only appear when the module is installed.
 
+### Filtering and sorting
 
-### Excluding of Words
-Common Words can be easily excluded based on the Current Language. Custom Exclude Words can be also defined, you can Choose how the Exclude Word Matches the Tag either Equals, Contains, Starts With or Ends Width the Tag.
+- Maximum number of tags and minimum tag weight (occurrence)
+- Sort by name or weight, ascending or descending, randomly or not at all
+- Exclude common words of the current language (configurable in the language files)
+- Exclude your own words, matching tags that equal, contain, start with or end with the word
 
-## Basic Settings
-You can define some Basic Settings such as...
-* Define a Tag Separator - Define an Separator between each Tag, for example an '|'.
-* Option to Render Html Tag Cloud as Unordered List (UL) - Or as simple List of Hyper Links
-* Cache Tags - If the Tags are Cached, they don't need generate every Time when the Page is loaded this can increase Page Load Time
-* Tags with Link - The Tag can contain a Link to the Portal Search with current word.
-* Check Url Visibility - Check Tag Urls if the current User can see Page of the Tag or Tag Link, if Not The Tag is not shown.
+### Links and search
 
-### Easy Color Settings Selection
-The Color Settings can be easily changed with an Color Picker
+- Tags link to the portal search. The search page and the query strings for normal and taxonomy searches are configurable.
+- Optionally hide tags whose target page the current user is not allowed to view.
 
-### IPortable Support 
-Easy Import and Export of all Module Settings
+### More
 
-*Screenshots*
-![wordle" - Word Cloud](https://github.com/w8tcha/TagCloud/blob/master/screenshots/dnnTagCloudWordle.png?raw=true)
+- Caching of the generated tags for faster page loads
+- Import and export of all module settings (`IPortable`)
+- Localized in English, German and Polish
 
-![The 3D HTML Tag Cloud](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudCanvas.jpg?raw=true)
+## Requirements
 
-![Sliding-Green Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/Sliding-Green.png?raw=true)
+- DNN 10.4.1 or later
+- .NET Framework 4.8.1
 
-![Rotated Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSkinRotated.jpg?raw=true)
+## Installation
 
-![TagTastic Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloud-TagTastic-Skin.jpg?raw=true)
+1. Download the latest `TagCloud_xx.xx.xx.zip` package from the [releases page](https://github.com/w8tcha/TagCloud/releases).
+2. In DNN, go to **Settings > Extensions**, click **Install Extension** and upload the package.
+3. Add the **TagCloud** module to a page and open **Manage Cloud** from the module actions to choose the render mode, tag sources and appearance.
 
-![RoundedButton Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloud-RoundedButton-Skin.jpg?raw=true)
+Upgrading works the same way: install the new package over the existing one, and your settings are kept.
 
-![Html Skin Orange](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSkinOrange.jpg?raw=true)
+## Creating your own skin
 
-![Html Skin Purple](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSkinPurple.jpg?raw=true)
+The HTML render mode is styled by the CSS files in `DesktopModules/TagCloud/Skins`. Every `.css` file in this folder shows up in the skin list of the module settings, so to add a skin:
 
-![Basic Settings](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudBasicSettings.jpg?raw=true)
+1. Copy an existing skin, e.g. `Standard.css`, to `MySkin.css`.
+2. Rename the class prefix in the file from `Standard` to `MySkin`:
+   - `.TagCloud-MySkin` is the container of the cloud
+   - `.CloudItem-MySkin_0` to `.CloudItem-MySkin_6` are the tags, from the lowest to the highest weight
+3. Select **MySkin** in the module settings.
 
-![Source Settings](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSourceSettings.jpg?raw=true)
+## Localization
 
-![Exclude Settings](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudExludes.jpg?raw=true)
+The texts are stored in the resource files in `App_LocalResources`:
 
-![Custom Tags Export Dialog](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudExportDialog.jpg?raw=true)
+- `Settings.ascx.resx`: texts of the settings page
+- `TagCloud.ascx.resx`: texts of the module, including the comma separated list of common words to exclude (`CommonWords.Text`)
+
+To add a language, copy both files with the culture code in the name (e.g. `Settings.ascx.fr-FR.resx`) and translate the values, or use the language editor in DNN.
+
+## Building from source
+
+Requirements: Visual Studio 2022 or later with the .NET Framework 4.8.1 developer pack.
+
+- Open `TagCloud.slnx` to work on the module.
+- Run `BuildPackages.bat`, or `msbuild Source/TagCloud.csproj /restore /p:Configuration=Deploy`, to create the install package in the `deploy` folder.
+
+Releases are created automatically: when the version in `Source/Installation/TagCloud.dnn` is raised and pushed to `master`, a GitHub Actions workflow builds the package and publishes it as a new release.
+
+## Screenshots
+
+| | |
+| :---: | :---: |
+| ![TagTastic skin](screenshots/TagCloud-TagTastic-Skin.jpg)<br>TagTastic skin | ![RoundedButton skin](screenshots/TagCloud-RoundedButton-Skin.jpg)<br>RoundedButton skin |
+| ![Orange skin](screenshots/TagCloudSkinOrange.jpg)<br>Orange skin | ![Purple skin](screenshots/TagCloudSkinPurple.jpg)<br>Purple skin |
+| ![Rotated skin](screenshots/TagCloudSkinRotated.jpg)<br>Rotated skin | ![Tag source settings](screenshots/TagCloudSourceSettings.jpg)<br>Tag source settings |
+| ![Exclude settings](screenshots/TagCloudExludes.jpg)<br>Exclude settings | ![Custom tags export dialog](screenshots/TagCloudExportDialog.jpg)<br>Custom tags export dialog |
+
+## Credits
+
+- [TagCanvas](https://www.goat1000.com/tagcanvas.php) by Graham Breach (LGPL-3.0), used for the 3D canvas cloud
+- The word cloud renderer is based on [wordcloud](https://github.com/timdream/wordcloud) by Tim Chien
+
+## License
+
+TagCloud is licensed under the [BSD 2-Clause License](LICENSE.md).
