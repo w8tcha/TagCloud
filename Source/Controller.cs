@@ -49,6 +49,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
+using DNN.Modules.Constants;
 using DNN.Modules.Objects;
 
 using DotNetNuke.Common;
@@ -169,7 +170,7 @@ namespace DNN.Modules
                 };
 
         /// <summary>
-        /// Export Module Settings and Custom Tags
+        /// Export Module Settings, Custom Tags and Exclusion Words
         /// </summary>
         /// <param name="moduleID">
         ///  Current Module Instance id
@@ -211,6 +212,8 @@ namespace DNN.Modules
 
                 ExportCustomTags(moduleID, sBXml);
 
+                ExportExcludeWords(tabModule.TabModuleID, sBXml);
+
                 sBXml.AppendLine("</TagCloud>");
 
                 return sBXml.ToString();
@@ -224,7 +227,7 @@ namespace DNN.Modules
         }
 
         /// <summary>
-        /// Import Module Settings and Custom Tags
+        /// Import Module Settings, Custom Tags and Exclusion Words
         /// </summary>
         /// <param name="moduleID">
         ///  The Module Id
@@ -261,6 +264,11 @@ namespace DNN.Modules
                 if (xmlTagCloud.SelectSingleNode("CustomTags") is XmlNode xmlCustomTags)
                 {
                     ImportCustomTags(moduleID, xmlCustomTags);
+                }
+
+                if (xmlTagCloud.SelectSingleNode("ExcludeWords") is XmlNode xmlExcludeWords)
+                {
+                    ImportExcludeWords(xmlExcludeWords, tabModules);
                 }
 
                 foreach (var tabModule in tabModules)
@@ -431,6 +439,88 @@ namespace DNN.Modules
                         translatedName,
                         moduleId,
                         xmlTranslation["Url"]?.InnerText ?? string.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes the exclusion words of the module instance.
+        /// </summary>
+        /// <param name="tabModuleId">The tab module id, the exclusion words are stored per instance.</param>
+        /// <param name="sBXml">The export XML.</param>
+        private static void ExportExcludeWords(int tabModuleId, StringBuilder sBXml)
+        {
+            var words = DataControl.TagCloudExcludeWordsGetByModule(tabModuleId);
+
+            if (words.Count == 0)
+            {
+                return;
+            }
+
+            sBXml.AppendLine("<ExcludeWords>");
+
+            foreach (var word in words)
+            {
+                sBXml.AppendFormat(
+                    "<ExcludeWord><Word>{0}</Word><Type>{1}</Type></ExcludeWord>",
+                    XmlUtils.XMLEncode(word.Word),
+                    word.ExcludeWordType);
+                sBXml.AppendLine();
+            }
+
+            sBXml.AppendLine("</ExcludeWords>");
+        }
+
+        /// <summary>
+        /// Adds the imported exclusion words to all instances of the module.
+        /// Words that already exist with the same type are skipped.
+        /// </summary>
+        /// <param name="xmlExcludeWords">The exclude words node.</param>
+        /// <param name="tabModules">The tab modules (instances) of the module.</param>
+        private static void ImportExcludeWords(XmlNode xmlExcludeWords, IList<ModuleInfo> tabModules)
+        {
+            var importWords = new List<ExcludeWord>();
+
+            foreach (XmlNode xmlWord in xmlExcludeWords.SelectNodes("ExcludeWord"))
+            {
+                var word = xmlWord["Word"]?.InnerText.Trim();
+
+                if (string.IsNullOrEmpty(word))
+                {
+                    continue;
+                }
+
+                if (!Enum.TryParse(xmlWord["Type"]?.InnerText, true, out ExcludeType excludeType)
+                    || !Enum.IsDefined(typeof(ExcludeType), excludeType))
+                {
+                    excludeType = ExcludeType.Equals;
+                }
+
+                importWords.Add(new ExcludeWord { Word = word, ExcludeWordType = excludeType });
+            }
+
+            foreach (var tabModuleId in tabModules.Select(tabModule => tabModule.TabModuleID))
+            {
+                var existingWords = new HashSet<string>(
+                    DataControl.TagCloudExcludeWordsGetByModule(tabModuleId)
+                        .Select(word => $"{word.ExcludeWordType}|{word.Word}"),
+                    StringComparer.OrdinalIgnoreCase);
+
+                foreach (var importWord in importWords)
+                {
+                    if (!existingWords.Add($"{importWord.ExcludeWordType}|{importWord.Word}"))
+                    {
+                        continue;
+                    }
+
+                    DataControl.TagCloudExcludeWordAdd(
+                        new ExcludeWord
+                            {
+                                Word = importWord.Word,
+                                ExcludeWordType = importWord.ExcludeWordType,
+                                ModuleID = tabModuleId,
+                                WordID = 0
+                            });
                 }
             }
         }
