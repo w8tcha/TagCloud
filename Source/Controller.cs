@@ -43,11 +43,10 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-
-using DNN.Modules.Constants;
 
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
@@ -59,7 +58,7 @@ namespace DNN.Modules
     /// <summary>
     /// The controller.
     /// </summary>
-    public class TagCloudController : ModuleSettingsBase, IPortable
+    public class TagCloudController : IPortable
     {
         /// <summary>
         /// The setting value for a transparent background.
@@ -107,6 +106,33 @@ namespace DNN.Modules
         }
 
         /// <summary>
+        /// The tab module settings that are exported and imported, the XML element name is the setting name.
+        /// Element names of older versions are imported case insensitive or via <see cref="LegacyElementNames"/>.
+        /// </summary>
+        private static readonly string[] PortableSettings =
+            {
+                "RenderMode", "SkinName", "TagSeparator", "RenderUl", "RenderItemWeight", "occurcount", "tagscount",
+                "SortType", "ExcludeCommon", "tagslink", "tagslinkChk", "CacheItems", "CustomSearchPage",
+                "SearchPageQueryString", "SearchPageTaxQueryString", "tagcloudwidth", "flashwidth", "flashheight",
+                "FontFamily", "WeightMode", "WeightSize", "tcolor", "hicolor", "bgcolor", "Ellipticity", "GridSize",
+                "MinSize", "Shape", "WeightFactor", "FillBox", "ModeCustom", "ModeTax", "ModeNewsarticles",
+                "ModeSimplegallery", "ModeActiveforums", "TaxMode", "TaxVocabularies", "NewsArticlesTab",
+                "NewsArticlesModule", "SimpleGalleryTab", "SimpleGalleryModule", "ActiveForumsTab",
+                "ActiveForumsModule"
+            };
+
+        /// <summary>
+        /// Element names written (or expected) by older versions that differ from the setting name.
+        /// </summary>
+        private static readonly Dictionary<string, string[]> LegacyElementNames =
+            new Dictionary<string, string[]>
+                {
+                    { "NewsArticlesTab", new[] { "newsarcticletab", "newsarticlestab" } },
+                    { "NewsArticlesModule", new[] { "newsarcticlemodule", "newsarticlesmodule" } },
+                    { "TaxVocabularies", new[] { "vocabulary" } }
+                };
+
+        /// <summary>
         /// Export Module Settings
         /// </summary>
         /// <param name="moduleID">
@@ -117,587 +143,45 @@ namespace DNN.Modules
         /// </returns>
         public string ExportModule(int moduleID)
         {
-            var moduleSettings = this.TabModuleSettings;
-
-            var sBXml = new StringBuilder();
-
             try
             {
-                string sTagsCount,
-                       sExcludeType,
-                       sExcludeCommon,
-                       sRenderUl,
-                       sSortTags,
-                       sTagsLink,
-                       sTagsLinkChk,
-                       sCacheItems,
-                       sCustomSearchPage,
-                       sSearchPageQueryString,
-                       sSearchPageTaxQueryString,
-                       sFontFamily,
-                       sWeightMode,
-                       sWeightSize,
-                       sRenderMode,
-                       sRenderItemWeight,
-                       sTagCloudWidth,
-                       sFlashWidth,
-                       sFlashHeight,
-                       sTcolor = string.Empty,
-                       sHicolor = string.Empty,
-                       sBgcolor = string.Empty,
-                       sOccurCount,
-                       sTagSeparator,
-                       sStartDate,
-                       sTaxMode,
-                       sVocabulary,
-                       sSkinName,
-                       sNewsArcticleTab,
-                       sNewsArcticleModule,
-                       sSimpleGalleryTab,
-                       sSimpleGalleryModule,
-                       sDnnBlogTab,
-                       sDnnBlogBlogs,
-                       sActiveForumsTab,
-                       sActiveForumsModule,
-                       sModeCustom,
-                       sModeTax,
-                       sModeReferrals,
-                       sModeNewsarticles,
-                       sModeSimplegallery,
-                       sModeDnnblog,
-                       sModeActiveforums,
-                       sModeSearch,
-                       sEllipticity = string.Empty,
-                       sGridSize = string.Empty,
-                       sMinSize = string.Empty,
-                       sShape = string.Empty,
-                       sWeightFactor = string.Empty,
-                       sFillBox = string.Empty;
+                var tabModule = ModuleController.Instance.GetTabModulesByModule(moduleID)
+                    .FirstOrDefault(module => !module.IsDeleted);
+
+                if (tabModule == null)
+                {
+                    return string.Empty;
+                }
+
+                var moduleSettings = tabModule.TabModuleSettings;
+
+                var sBXml = new StringBuilder();
 
                 sBXml.AppendLine("<TagCloud>");
                 sBXml.AppendLine("<Settings>");
 
-                try
+                foreach (var name in PortableSettings)
                 {
-                    sTagSeparator = (string)moduleSettings["TagSeparator"];
-                }
-                catch
-                {
-                    sTagSeparator = string.Empty;
-                }
-
-                try
-                {
-                    sStartDate = (string)moduleSettings["ReferralStart"];
-                }
-                catch
-                {
-                    sStartDate = "01.01.1999";
-                }
-
-                try
-                {
-                    sNewsArcticleTab = (string)moduleSettings["NewsArticlesTab"];
-                }
-                catch
-                {
-                    sNewsArcticleTab = "-1";
-                }
-
-                try
-                {
-                    sNewsArcticleModule = (string)moduleSettings["NewsArticlesModule"];
-                }
-                catch
-                {
-                    sNewsArcticleModule = "-1";
-                }
-
-                try
-                {
-                    sSimpleGalleryTab = (string)moduleSettings["SimpleGalleryTab"];
-                }
-                catch
-                {
-                    sSimpleGalleryTab = "-1";
-                }
-
-                try
-                {
-                    sDnnBlogTab = (string)moduleSettings["DnnBlogTab"];
-                }
-                catch
-                {
-                    sDnnBlogTab = "-1";
-                }
-
-                try
-                {
-                    sDnnBlogBlogs = (string)moduleSettings["DnnBlogBlogs"];
-                }
-                catch
-                {
-                    sDnnBlogBlogs = "all";
-                }
-
-                try
-                {
-                    sActiveForumsTab = (string)moduleSettings["ActiveForumsTab"];
-                }
-                catch
-                {
-                    sActiveForumsTab = "-1";
-                }
-
-                try
-                {
-                    sActiveForumsModule = (string)moduleSettings["ActiveForumsModule"];
-                }
-                catch
-                {
-                    sActiveForumsModule = "-1";
-                }
-
-                try
-                {
-                    sSimpleGalleryModule = (string)moduleSettings["SimpleGalleryModule"];
-                }
-                catch
-                {
-                    sSimpleGalleryModule = "-1";
-                }
-
-                try
-                {
-                    sModeCustom = (string)moduleSettings["ModeCustom"];
-                }
-                catch
-                {
-                    sModeCustom = "False";
-                }
-
-                try
-                {
-                    sModeTax = (string)moduleSettings["ModeTax"];
-                }
-                catch
-                {
-                    sModeTax = "False";
-                }
-
-                try
-                {
-                    sModeReferrals = (string)moduleSettings["ModeReferrals"];
-                }
-                catch
-                {
-                    sModeReferrals = "False";
-                }
-
-                try
-                {
-                    sModeNewsarticles = (string)moduleSettings["ModeNewsarticles"];
-                }
-                catch
-                {
-                    sModeNewsarticles = "False";
-                }
-
-                try
-                {
-                    sModeSimplegallery = (string)moduleSettings["ModeSimplegallery"];
-                }
-                catch
-                {
-                    sModeSimplegallery = "False";
-                }
-
-                try
-                {
-                    sModeDnnblog = (string)moduleSettings["ModeDnnblog"];
-                }
-                catch
-                {
-                    sModeDnnblog = "False";
-                }
-
-                try
-                {
-                    sModeActiveforums = (string)moduleSettings["ModeActiveforums"];
-                }
-                catch
-                {
-                    sModeActiveforums = "False";
-                }
-
-                try
-                {
-                    sModeSearch = (string)moduleSettings["ModeSearch"];
-                }
-                catch
-                {
-                    sModeSearch = "True";
-                }
-
-                try
-                {
-                    sTaxMode = (string)moduleSettings["TaxMode"];
-                }
-                catch
-                {
-                    sTaxMode = "tab";
-                }
-
-                try
-                {
-                    sVocabulary = (string)moduleSettings["TaxVocabularies"];
-                }
-                catch
-                {
-                    sVocabulary = string.Empty;
-                }
-
-                if (!string.IsNullOrEmpty((string)moduleSettings["SkinName"]))
-                {
-                    try
+                    // Only export settings that are set, missing settings keep the defaults on import
+                    if (!(moduleSettings[name] is string value))
                     {
-                        sSkinName = (string)moduleSettings["SkinName"];
+                        continue;
                     }
-                    catch (Exception)
-                    {
-                        sSkinName = "Standard";
-                    }
-                }
-                else
-                {
-                    sSkinName = "Standard";
-                }
 
-                try
-                {
-                    sOccurCount = (string)moduleSettings["occurcount"];
+                    sBXml.AppendFormat("<{0}>{1}</{0}>", name, XmlUtils.XMLEncode(NormalizeSetting(name, value)));
                 }
-                catch
-                {
-                    sOccurCount = "1";
-                }
-
-                try
-                {
-                    sTagsCount = (string)moduleSettings["tagscount"];
-                }
-                catch
-                {
-                    sTagsCount = "60";
-                }
-
-                try
-                {
-                    sExcludeType = (string)moduleSettings["ExcludeType"];
-                }
-                catch (Exception)
-                {
-                    sExcludeType = nameof(ExcludeType.Equals);
-                }
-
-                try
-                {
-                    sExcludeCommon = (string)moduleSettings["ExcludeCommon"];
-                }
-                catch (Exception)
-                {
-                    sExcludeCommon = "True";
-                }
-
-                try
-                {
-                    sSortTags = (string)moduleSettings["SortType"];
-                }
-                catch (Exception)
-                {
-                    sSortTags = nameof(SortType.AlphabeticAsc);
-                }
-
-                try
-                {
-                    sRenderUl = (string)moduleSettings["RenderUl"];
-                }
-                catch (Exception)
-                {
-                    sRenderUl = "False";
-                }
-
-                try
-                {
-                    sTagsLink = (string)moduleSettings["tagslink"];
-                }
-                catch (Exception)
-                {
-                    sTagsLink = "True";
-                }
-
-                try
-                {
-                    sTagsLinkChk = (string)moduleSettings["tagslinkChk"];
-                }
-                catch (Exception)
-                {
-                    sTagsLinkChk = "False";
-                }
-
-                try
-                {
-                    sCacheItems = (string)moduleSettings["CacheItems"];
-                }
-                catch (Exception)
-                {
-                    sCacheItems = "true";
-                }
-
-                try
-                {
-                    sCustomSearchPage = (string)moduleSettings["CustomSearchPage"];
-                }
-                catch (Exception)
-                {
-                    sCustomSearchPage = "-1";
-                }
-
-                try
-                {
-                    sSearchPageQueryString = (string)moduleSettings["SearchPageQueryString"];
-                }
-                catch (Exception)
-                {
-                    sSearchPageQueryString = "Search=";
-                }
-
-                try
-                {
-                    sSearchPageTaxQueryString = (string)moduleSettings["SearchPageTaxQueryString"];
-                }
-                catch (Exception)
-                {
-                    sSearchPageTaxQueryString = "Tag=";
-                }
-
-                try
-                {
-                    sFontFamily = (string)moduleSettings["FontFamily"];
-                }
-                catch (Exception)
-                {
-                    sFontFamily = "Georgia, Arial, sans-serif";
-                }
-
-                try
-                {
-                    sWeightMode = (string)moduleSettings["WeightMode"];
-                }
-                catch (Exception)
-                {
-                    sWeightMode = nameof(WeightMode.size);
-                }
-
-                try
-                {
-                    sWeightSize = (string)moduleSettings["WeightSize"];
-                }
-                catch (Exception)
-                {
-                    sWeightSize = "1.0";
-                }
-
-                try
-                {
-                    sRenderMode = (string)moduleSettings["RenderMode"];
-                }
-                catch (Exception)
-                {
-                    sRenderMode = nameof(RenderMode.Html5);
-                }
-
-                try
-                {
-                    sRenderItemWeight = (string)moduleSettings["RenderItemWeight"];
-                }
-                catch (Exception)
-                {
-                    sRenderItemWeight = "False";
-                }
-
-                try
-                {
-                    sFlashWidth = (string)moduleSettings["flashwidth"];
-                }
-                catch (Exception)
-                {
-                    sFlashWidth = "500";
-                }
-
-                try
-                {
-                    sFlashHeight = (string)moduleSettings["flashheight"];
-                }
-                catch (Exception)
-                {
-                    sFlashHeight = "300";
-                }
-
-                try
-                {
-                    sTagCloudWidth = (string)moduleSettings["tagcloudwidth"];
-                }
-                catch (Exception)
-                {
-                    sTagCloudWidth = "500px";
-                }
-
-                sTcolor = NormalizeColor((string)moduleSettings["tcolor"], "000000");
-                sHicolor = NormalizeColor((string)moduleSettings["hicolor"], "42a5ff");
-                sBgcolor = NormalizeColor((string)moduleSettings["bgcolor"], Transparent);
-
-                try
-                {
-                    sEllipticity = (string)moduleSettings["Ellipticity"];
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sEllipticity))
-                    {
-                        sEllipticity = "0.85";
-                    }
-                }
-
-                try
-                {
-                    sGridSize = (string)moduleSettings["GridSize"];
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sGridSize))
-                    {
-                        sGridSize = "8";
-                    }
-                }
-
-                try
-                {
-                    sMinSize = (string)moduleSettings["MinSize"];
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sMinSize))
-                    {
-                        sMinSize = "0";
-                    }
-                }
-
-                try
-                {
-                    sShape = (string)moduleSettings["Shape"];
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sShape))
-                    {
-                        sShape = "circle";
-                    }
-                }
-
-                try
-                {
-                    sWeightFactor = (string)moduleSettings["WeightFactor"];
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sWeightFactor))
-                    {
-                        sWeightFactor = "2.1";
-                    }
-                }
-
-                try
-                {
-                    sFillBox = (string)moduleSettings["FillBox"];
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sFillBox))
-                    {
-                        sFillBox = "False";
-                    }
-                }
-
-                sBXml.AppendFormat("<occurcount>{0}</occurcount>", XmlUtils.XMLEncode(sOccurCount));
-                sBXml.AppendFormat("<skinname>{0}</skinname>", XmlUtils.XMLEncode(sSkinName));
-                sBXml.AppendFormat("<tagseparator>{0}</tagseparator>", XmlUtils.XMLEncode(sTagSeparator));
-                sBXml.AppendFormat("<referralstart>{0}</referralstart>", XmlUtils.XMLEncode(sStartDate));
-
-                sBXml.AppendFormat("<ModeCustom>{0}</ModeCustom>", XmlUtils.XMLEncode(sModeCustom));
-                sBXml.AppendFormat("<ModeTax>{0}</ModeTax>", XmlUtils.XMLEncode(sModeTax));
-                sBXml.AppendFormat("<ModeReferrals>{0}</ModeReferrals>", XmlUtils.XMLEncode(sModeReferrals));
-                sBXml.AppendFormat("<ModeSimplegallery>{0}</ModeSimplegallery>", XmlUtils.XMLEncode(sModeSimplegallery));
-                sBXml.AppendFormat("<ModeNewsarticles>{0}</ModeNewsarticles>", XmlUtils.XMLEncode(sModeNewsarticles));
-                sBXml.AppendFormat("<ModeActiveforums>{0}</ModeActiveforums>", XmlUtils.XMLEncode(sModeActiveforums));
-                sBXml.AppendFormat("<ModeDnnblog>{0}</ModeDnnblog>", XmlUtils.XMLEncode(sModeDnnblog));
-                sBXml.AppendFormat("<ModeSearch>{0}</ModeSearch>", XmlUtils.XMLEncode(sModeSearch));
-
-                sBXml.AppendFormat("<newsarcticletab>{0}</newsarcticletab>", XmlUtils.XMLEncode(sNewsArcticleTab));
-                sBXml.AppendFormat(
-                    "<newsarcticlemodule>{0}</newsarcticlemodule>", XmlUtils.XMLEncode(sNewsArcticleModule));
-                sBXml.AppendFormat("<simplegallerytab>{0}</simplegallerytab>", XmlUtils.XMLEncode(sSimpleGalleryTab));
-                sBXml.AppendFormat(
-                    "<simplegallerymodule>{0}</simplegallerymodule>", XmlUtils.XMLEncode(sSimpleGalleryModule));
-                sBXml.AppendFormat("<dnnblogtab>{0}</dnnblogtab>", XmlUtils.XMLEncode(sDnnBlogTab));
-                sBXml.AppendFormat("<dnnblogblogs>{0}</dnnblogblogs>", XmlUtils.XMLEncode(sDnnBlogBlogs));
-                sBXml.AppendFormat("<activeforumstab>{0}</activeforumstab>", XmlUtils.XMLEncode(sActiveForumsTab));
-                sBXml.AppendFormat(
-                    "<activeforumsmodule>{0}</activeforumsmodule>", XmlUtils.XMLEncode(sActiveForumsModule));
-                sBXml.AppendFormat("<tagscount>{0}</tagscount>", XmlUtils.XMLEncode(sTagsCount));
-                sBXml.AppendFormat("<SortType>{0}</SortType>", XmlUtils.XMLEncode(sSortTags));
-                sBXml.AppendFormat("<tagslink>{0}</tagslink>", XmlUtils.XMLEncode(sTagsLink));
-                sBXml.AppendFormat("<renderul>{0}</renderul>", XmlUtils.XMLEncode(sRenderUl));
-                sBXml.AppendFormat("<tagslinkChk>{0}</tagslinkChk>", XmlUtils.XMLEncode(sTagsLinkChk));
-                sBXml.AppendFormat("<cacheitems>{0}</cacheitems>", XmlUtils.XMLEncode(sCacheItems));
-                sBXml.AppendFormat("<CustomSearchPage>{0}</CustomSearchPage>", XmlUtils.XMLEncode(sCustomSearchPage));
-                sBXml.AppendFormat(
-                    "<SearchPageQueryString>{0}</SearchPageQueryString>", XmlUtils.XMLEncode(sSearchPageQueryString));
-                sBXml.AppendFormat(
-                    "<SearchPageTaxQueryString>{0}</SearchPageTaxQueryString>", XmlUtils.XMLEncode(sSearchPageTaxQueryString));
-                sBXml.AppendFormat("<FontFamily>{0}</FontFamily>", XmlUtils.XMLEncode(sFontFamily));
-                sBXml.AppendFormat("<WeightMode>{0}</WeightMode>", XmlUtils.XMLEncode(sWeightMode));
-                sBXml.AppendFormat("<WeightSize>{0}</WeightSize>", XmlUtils.XMLEncode(sWeightSize));
-                sBXml.AppendFormat("<rendermode>{0}</rendermode>", XmlUtils.XMLEncode(sRenderMode));
-                sBXml.AppendFormat("<RenderItemWeight>{0}</RenderItemWeight>", XmlUtils.XMLEncode(sRenderItemWeight));
-                sBXml.AppendFormat("<flashwidth>{0}</flashwidth>", XmlUtils.XMLEncode(sFlashWidth));
-                sBXml.AppendFormat("<flashheight>{0}</flashheight>", XmlUtils.XMLEncode(sFlashHeight));
-                sBXml.AppendFormat("<tagcloudwidth>{0}</tagcloudwidth>", XmlUtils.XMLEncode(sTagCloudWidth));
-
-                sBXml.AppendFormat("<excludeType>{0}</excludeType>", XmlUtils.XMLEncode(sExcludeType));
-                sBXml.AppendFormat("<ExcludeCommon>{0}</ExcludeCommon>", XmlUtils.XMLEncode(sExcludeCommon));
-                sBXml.AppendFormat("<tcolor>{0}</tcolor>", XmlUtils.XMLEncode(sTcolor));
-                sBXml.AppendFormat("<hicolor>{0}</hicolor>", XmlUtils.XMLEncode(sHicolor));
-                sBXml.AppendFormat("<bgcolor>{0}</bgcolor>", XmlUtils.XMLEncode(sBgcolor));
-                sBXml.AppendFormat("<taxmode>{0}</taxmode>", XmlUtils.XMLEncode(sTaxMode));
-                sBXml.AppendFormat("<taxvocabularies>{0}</taxvocabularies>", XmlUtils.XMLEncode(sVocabulary));
-
-                sBXml.AppendFormat("<Ellipticity>{0}</Ellipticity>", XmlUtils.XMLEncode(sEllipticity));
-                sBXml.AppendFormat("<GridSize>{0}</GridSize>", XmlUtils.XMLEncode(sGridSize));
-                sBXml.AppendFormat("<MinSize>{0}</MinSize>", XmlUtils.XMLEncode(sMinSize));
-                sBXml.AppendFormat("<Shape>{0}</Shape>", XmlUtils.XMLEncode(sShape));
-                sBXml.AppendFormat("<WeightFactor>{0}</WeightFactor>", XmlUtils.XMLEncode(sWeightFactor));
-                sBXml.AppendFormat("<FillBox>{0}</FillBox>", XmlUtils.XMLEncode(sFillBox));
 
                 sBXml.AppendLine("</Settings>");
                 sBXml.AppendLine("</TagCloud>");
+
+                return sBXml.ToString();
             }
             catch (Exception exc)
             {
-                Exceptions.ProcessModuleLoadException(this, exc);
-            }
+                Exceptions.LogException(exc);
 
-            return sBXml.ToString();
+                return string.Empty;
+            }
         }
 
         /// <summary>
@@ -721,125 +205,101 @@ namespace DNN.Modules
             {
                 var xmlTagCloud = Globals.GetContent(content, "TagCloud");
 
-                var objModules = ModuleController.Instance;
-
-                foreach (XmlNode xmlContent in xmlTagCloud.SelectNodes("Settings"))
+                if (!(xmlTagCloud?.SelectSingleNode("Settings") is XmlNode xmlSettings))
                 {
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "occurcount", xmlContent["occurcount"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "SkinName", xmlContent["skinname"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "TagSeparator", xmlContent["tagseparator"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ReferralStart", xmlContent["referralstart"].InnerText);
+                    return;
+                }
 
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ModeCustom", xmlContent["ModeCustom"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ModeReferrals", xmlContent["ModeReferrals"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ModeSimplegallery", xmlContent["ModeSimplegallery"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ModeNewsarticles", xmlContent["ModeNewsarticles"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ModeActiveforums", xmlContent["ModeActiveforums"].InnerText);
+                // Element names are matched case insensitive, older versions used different casing
+                var elements = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ModeSearch", xmlContent["ModeSearch"].InnerText);
+                foreach (XmlNode node in xmlSettings.ChildNodes)
+                {
+                    if (node.NodeType == XmlNodeType.Element && !elements.ContainsKey(node.Name))
+                    {
+                        elements.Add(node.Name, node.InnerText);
+                    }
+                }
 
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "NewsArticlesTab", xmlContent["newsarticlestab"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "NewsArticlesModule", xmlContent["newsarticlesmodule"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "SimpleGalleryTab", xmlContent["simplegallerytab"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "SimpleGalleryModule", xmlContent["simplegallerymodule"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "DnnBlogTab", xmlContent["dnnblogtab"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "DnnBlogBlogs", xmlContent["dnnblogblogs"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ActiveForumsTab", xmlContent["activeforumstab"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ActiveForumsModule", xmlContent["activeforumsmodule"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "TaxMode", xmlContent["taxmode"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "TaxVocabularies", xmlContent["vocabulary"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tagscount", xmlContent["tagscount"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "SortType", xmlContent["SortType"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "RenderUl", xmlContent["renderul"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tagslink", xmlContent["tagslink"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tagslinkChk", xmlContent["tagslinkChk"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "CacheItems", xmlContent["cacheitems"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "CustomSearchPage", xmlContent["CustomSearchPage"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId,
-                        "SearchPageQueryString",
-                        xmlContent["SearchPageQueryString"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId,
-                        "SearchPageTaxQueryString",
-                        xmlContent["SearchPageTaxQueryString"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "FontFamily", xmlContent["FontFamily"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "WeightMode", xmlContent["WeightMode"].InnerText); 
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "WeightSize", xmlContent["WeightSize"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "rendermode", xmlContent["RenderMode"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "RenderItemWeight", xmlContent["RenderItemWeight"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "flashwidth", xmlContent["flashwidth"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "flashheight", xmlContent["flashheight"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tagcloudwidth", xmlContent["tagcloudwidth"].InnerText);
+                var tabModules = ModuleController.Instance.GetTabModulesByModule(moduleID)
+                    .Where(module => !module.IsDeleted)
+                    .ToList();
 
-                   objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ExcludeType", xmlContent["excludeType"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "ExcludeCommon", xmlContent["ExcludeCommon"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tcolor", NormalizeColor(xmlContent["tcolor"]?.InnerText, "000000"));
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "hicolor", NormalizeColor(xmlContent["hicolor"]?.InnerText, "42a5ff"));
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "bgcolor", NormalizeColor(xmlContent["bgcolor"]?.InnerText, Transparent));
+                foreach (var name in PortableSettings)
+                {
+                    if (!TryGetElement(elements, name, out var value))
+                    {
+                        continue;
+                    }
 
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "TaxMode", xmlContent["taxmode"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "TaxVocabularies", xmlContent["taxvocabularies"].InnerText);
+                    value = NormalizeSetting(name, value);
 
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "Ellipticity", xmlContent["Ellipticity"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "GridSize", xmlContent["GridSize"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "MinSize", xmlContent["MinSize"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "Shape", xmlContent["Shape"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "WeightFactor", xmlContent["WeightFactor"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "FillBox", xmlContent["FillBox"].InnerText);
+                    foreach (var tabModule in tabModules)
+                    {
+                        ModuleController.Instance.UpdateTabModuleSetting(tabModule.TabModuleID, name, value);
+                    }
+                }
+
+                foreach (var tabModule in tabModules)
+                {
+                    // Remove the cached tags, so the imported settings are used right away
+                    DataCache.RemoveCache($"CloudItems{tabModule.TabModuleID}");
                 }
             }
             catch (Exception exc)
             {
-                Exceptions.ProcessModuleLoadException(this, exc);
+                Exceptions.LogException(exc);
+            }
+        }
+
+        /// <summary>
+        /// Gets the value of a setting element, including element names of older versions.
+        /// </summary>
+        /// <param name="elements">The imported elements by name.</param>
+        /// <param name="name">The setting name.</param>
+        /// <param name="value">The element value.</param>
+        /// <returns>True if the element exists.</returns>
+        private static bool TryGetElement(IDictionary<string, string> elements, string name, out string value)
+        {
+            if (elements.TryGetValue(name, out value))
+            {
+                return true;
+            }
+
+            if (LegacyElementNames.TryGetValue(name, out var legacyNames))
+            {
+                foreach (var legacyName in legacyNames)
+                {
+                    if (elements.TryGetValue(legacyName, out value))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            value = null;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Normalizes the setting values that need a fixed format.
+        /// </summary>
+        /// <param name="name">The setting name.</param>
+        /// <param name="value">The setting value.</param>
+        /// <returns>The normalized value.</returns>
+        private static string NormalizeSetting(string name, string value)
+        {
+            switch (name)
+            {
+                case "tcolor":
+                    return NormalizeColor(value, "000000");
+                case "hicolor":
+                    return NormalizeColor(value, "42a5ff");
+                case "bgcolor":
+                    return NormalizeColor(value, Transparent);
+                default:
+                    return value;
             }
         }
     }

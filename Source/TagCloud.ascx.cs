@@ -124,11 +124,6 @@ namespace DNN.Modules
         }
 
         /// <summary>
-        /// Gets or sets The tab module id.
-        /// </summary>
-        public static int CurrentTabModuleId { get; private set; }
-
-        /// <summary>
         ///  Gets Add Menu Entries to Module Container
         /// </summary>
         public ModuleActionCollection ModuleActions
@@ -154,8 +149,6 @@ namespace DNN.Modules
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(EventArgs e)
         {
-            CurrentTabModuleId = this.TabModuleId;
-
             this.InitializeComponent();
             base.OnInit(e);
         }
