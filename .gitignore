@@ -257,3 +257,4 @@ paket-files/
 
 # Module install packages produced by the Deploy build
 /deploy/
+errors.txt
