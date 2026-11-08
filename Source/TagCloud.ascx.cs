@@ -57,6 +57,7 @@ using DNN.Modules.Objects;
 using DNN.Modules.VRK.Controls;
 
 using DotNetNuke.Abstractions;
+using DotNetNuke.Abstractions.ClientResources;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Content.Common;
 using DotNetNuke.Entities.Content.Taxonomy;
@@ -69,7 +70,6 @@ using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
-using DotNetNuke.Web.Client.ClientResourceManagement;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -94,6 +94,11 @@ namespace DNN.Modules
         private readonly IJavaScriptLibraryHelper javaScript;
 
         /// <summary>
+        /// The client resource controller.
+        /// </summary>
+        private readonly IClientResourceController clientResourceController;
+
+        /// <summary>
         /// The vocabularies.
         /// </summary>
         private string[] vocabularies;
@@ -110,6 +115,7 @@ namespace DNN.Modules
         {
             this.navigationManager = this.DependencyProvider.GetRequiredService<INavigationManager>();
             this.javaScript = this.DependencyProvider.GetRequiredService<IJavaScriptLibraryHelper>();
+            this.clientResourceController = this.DependencyProvider.GetRequiredService<IClientResourceController>();
         }
 
         /// <summary>
@@ -523,7 +529,7 @@ namespace DNN.Modules
 
             var tabId = int.Parse(newUrl);
 
-            var objTabController = new TabController();
+            var objTabController = TabController.Instance;
 
             var objTabInfo = objTabController.GetTab(tabId, this.PortalSettings.PortalId, true);
 
@@ -698,7 +704,7 @@ namespace DNN.Modules
 
             var tc = new TagController();
 
-            var simpleGalleryInstance = new ModuleController().GetModule(this.settings.VentrianModuleSimple, this.settings.VentrianTabSimple);
+            var simpleGalleryInstance = ModuleController.Instance.GetModule(this.settings.VentrianModuleSimple, this.settings.VentrianTabSimple, false);
 
             try
             {
@@ -810,9 +816,9 @@ namespace DNN.Modules
                     break;
                 case "all":
                     {
-                        var termRep = Util.GetTermController();
+                        var termRep = this.DependencyProvider.GetRequiredService<ITermController>();
 
-                        var vocabRep = Util.GetVocabularyController();
+                        var vocabRep = this.DependencyProvider.GetRequiredService<IVocabularyController>();
 
                         var vs = from v in vocabRep.GetVocabularies()
                                                     where
@@ -839,7 +845,7 @@ namespace DNN.Modules
                     {
                         if (this.vocabularies != null)
                         {
-                            var termRep = Util.GetTermController();
+                            var termRep = this.DependencyProvider.GetRequiredService<ITermController>();
 
                             foreach (var sVocabularyId in this.vocabularies)
                             {
@@ -1192,9 +1198,9 @@ namespace DNN.Modules
 
             if (!this.settings.SkinName.Equals("None"))
             {
-                ClientResourceManager.RegisterStyleSheet(
-                    this.Page,
-                    $"{this.ResolveUrl("Skins")}/{this.settings.SkinName}.css");
+                this.clientResourceController
+                    .CreateStylesheet($"{this.ResolveUrl("Skins")}/{this.settings.SkinName}.css")
+                    .Register();
 
                 this.tagCloudDiv.CssClass += $"-{this.settings.SkinName}";
                 this.c1.ItemCssClassPrefix += $"-{this.settings.SkinName}";

@@ -735,7 +735,7 @@ namespace DNN.Modules
             {
                 var xmlTagCloud = Globals.GetContent(content, "TagCloud");
 
-                var objModules = new ModuleController();
+                var objModules = ModuleController.Instance;
 
                 foreach (XmlNode xmlContent in xmlTagCloud.SelectNodes("Settings"))
                 {

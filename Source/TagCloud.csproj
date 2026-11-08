@@ -79,7 +79,6 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -104,7 +103,6 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|AnyCPU'">
@@ -115,9 +113,6 @@
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -159,6 +154,8 @@
     <PackageReference Include="DotNetNuke.DependencyInjection" Version="10.4.1" ExcludeAssets="runtime" />
     <PackageReference Include="DotNetNuke.Web" Version="10.4.1" ExcludeAssets="runtime" />
     <PackageReference Include="DotNetNuke.Web.Client" Version="10.4.1" ExcludeAssets="runtime" />
+    <!-- DNN 10.4.1 is compiled against 10.0.12, but its packages only declare 8.0.0; pin it to avoid version conflicts -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" ExcludeAssets="runtime" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\WeightMode.cs" />

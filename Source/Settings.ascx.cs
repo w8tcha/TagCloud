@@ -56,9 +56,12 @@ using DNN.Modules.Constants;
 using DNN.Modules.Objects;
 
 using DotNetNuke.Abstractions;
+using DotNetNuke.Abstractions.Application;
+using DotNetNuke.Abstractions.ClientResources;
 using DotNetNuke.Collections;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Content.Common;
+using DotNetNuke.Entities.Content.Taxonomy;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
@@ -68,7 +71,6 @@ using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.UserControls;
-using DotNetNuke.Web.Client.ClientResourceManagement;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -157,12 +159,30 @@ namespace DNN.Modules
         private readonly IJavaScriptLibraryHelper javaScript;
 
         /// <summary>
+        /// The host settings.
+        /// </summary>
+        private readonly IHostSettings hostSettings;
+
+        /// <summary>
+        /// The application status info.
+        /// </summary>
+        private readonly IApplicationStatusInfo appStatus;
+
+        /// <summary>
+        /// The client resource controller.
+        /// </summary>
+        private readonly IClientResourceController clientResourceController;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Settings"/> class.
         /// </summary>
         protected Settings()
         {
             this.navigationManager = this.DependencyProvider.GetRequiredService<INavigationManager>();
             this.javaScript = this.DependencyProvider.GetRequiredService<IJavaScriptLibraryHelper>();
+            this.hostSettings = this.DependencyProvider.GetRequiredService<IHostSettings>();
+            this.appStatus = this.DependencyProvider.GetRequiredService<IApplicationStatusInfo>();
+            this.clientResourceController = this.DependencyProvider.GetRequiredService<IClientResourceController>();
         }
 
         /// <summary>
@@ -432,7 +452,7 @@ namespace DNN.Modules
         /// <param name="panelOpenSelector">The panel open selector.</param>
         private void AddTabScript(int restoreTab, string panelOpenSelector = null)
         {
-            ClientResourceManager.RegisterStyleSheet(this.Page, this.ResolveUrl("module.css"));
+            this.clientResourceController.CreateStylesheet(this.ResolveUrl("module.css")).Register();
 
             var csType = typeof(Page);
 
@@ -748,13 +768,13 @@ namespace DNN.Modules
         {
             dropDownList.Items.Clear();
 
-            var objTabController = new TabController();
+            var objTabController = TabController.Instance;
 
-            var objDesktopModuleInfo = DesktopModuleController.GetDesktopModuleByModuleName(sModuleName, this.PortalId);
+            var objDesktopModuleInfo = DesktopModuleController.GetDesktopModuleByModuleName(this.hostSettings, sModuleName, this.PortalId);
 
             if (objDesktopModuleInfo == null)
             {
-                objDesktopModuleInfo = DesktopModuleController.GetDesktopModuleByFriendlyName(sModuleName);
+                objDesktopModuleInfo = DesktopModuleController.GetDesktopModuleByFriendlyName(this.hostSettings, sModuleName);
 
                 if (objDesktopModuleInfo == null)
                 {
@@ -764,7 +784,7 @@ namespace DNN.Modules
 
             foreach (var objTab in objTabs.Where(tab => !tab.IsDeleted))
             {
-                var objModules = new ModuleController();
+                var objModules = ModuleController.Instance;
 
                 foreach (var objModule in objModules.GetTabModules(objTab.TabID).Select(pair => pair.Value))
                 {
@@ -875,7 +895,7 @@ namespace DNN.Modules
         {
             try
             {
-                var vocabRep = Util.GetVocabularyController();
+                var vocabRep = this.DependencyProvider.GetRequiredService<IVocabularyController>();
 
                 var vs = from v in vocabRep.GetVocabularies()
                          where v.ScopeType.ScopeType == "Application"
@@ -1586,8 +1606,7 @@ namespace DNN.Modules
                 }
 
                 // Delete Old Setting.
-                var objModules = new ModuleController();
-                objModules.DeleteTabModuleSetting(this.TabModuleId, "TagMode");
+                ModuleController.Instance.DeleteTabModuleSetting(this.TabModuleId, "TagMode");
             }
 
             if (!string.IsNullOrEmpty((string)this.Settings["ModeCustom"]))
@@ -1630,7 +1649,7 @@ namespace DNN.Modules
                 this.phCustom.Visible = true;
             }
 
-            var tabs = TabController.GetPortalTabs(this.PortalSettings.PortalId, -1, true, true);
+            var tabs = TabController.GetPortalTabs(this.hostSettings, this.appStatus, this.PortalSettings.PortalId, -1, true, true);
 
             this.CustomSearchPage.Items.Clear();
 
@@ -2202,7 +2221,7 @@ namespace DNN.Modules
         /// </summary>
         private void SaveChanges()
         {
-            var modController = new ModuleController();
+            var modController = ModuleController.Instance;
 
             // Setting TagSeparator
             this.SaveSetting(modController, "TagSeparator", this.txtTagSeparator.Text);
@@ -2527,7 +2546,7 @@ namespace DNN.Modules
         /// </param>
         private void TagModesSelectedIndexChanged(object sender, EventArgs e)
         {
-            var tabs = TabController.GetPortalTabs(this.PortalSettings.PortalId, -1, true, true);
+            var tabs = TabController.GetPortalTabs(this.hostSettings, this.appStatus, this.PortalSettings.PortalId, -1, true, true);
 
             var panelOpenSelector = string.Empty;
 
