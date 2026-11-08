@@ -461,8 +461,8 @@ namespace DNN.Modules
             canvasScript.AppendFormat("WordCloud('{0}', {{", canvasControl.ClientID);
 
             canvasScript.AppendFormat("fontFamily:'{0}',", HttpUtility.JavaScriptStringEncode(this.settings.FontFamily));
-            canvasScript.AppendFormat("gridSize: {0},", this.settings.WordCloudSettings.GridSize);
-            canvasScript.AppendFormat("ellipticity: {0},", this.settings.WordCloudSettings.Ellipticity);
+            canvasScript.AppendFormat(CultureInfo.InvariantCulture, "gridSize: {0},", this.settings.WordCloudSettings.GridSize);
+            canvasScript.AppendFormat(CultureInfo.InvariantCulture, "ellipticity: {0},", this.settings.WordCloudSettings.Ellipticity);
             canvasScript.Append("center: false,");
 
             if (!this.settings.Bgcolor.Contains("transparent"))
@@ -476,8 +476,8 @@ namespace DNN.Modules
                 canvasScript.Append("backgroundColor: 'transparent',");
             }
 
-            canvasScript.AppendFormat("weightFactor: {0},", this.settings.WordCloudSettings.WeightFactor);
-            canvasScript.AppendFormat("minSize: {0},", this.settings.WordCloudSettings.MinSize);
+            canvasScript.AppendFormat(CultureInfo.InvariantCulture, "weightFactor: {0},", this.settings.WordCloudSettings.WeightFactor);
+            canvasScript.AppendFormat(CultureInfo.InvariantCulture, "minSize: {0},", this.settings.WordCloudSettings.MinSize);
             canvasScript.Append("clearCanvas: true,");
             canvasScript.AppendFormat("fillBox: {0},", this.settings.WordCloudSettings.FillBox.ToString().ToLower());
             canvasScript.AppendFormat(
@@ -493,6 +493,7 @@ namespace DNN.Modules
             foreach (var item in enumerable)
             {
                 canvasScript.AppendFormat(
+                    CultureInfo.InvariantCulture,
                     currentItem.Equals(itemCount) ? "['{0}', {1}]" : "['{0}', {1}],",
                     HttpUtility.JavaScriptStringEncode(item.Text),
                     item.Weight);
@@ -515,6 +516,27 @@ namespace DNN.Modules
         }
 
         /// <summary>
+        /// Parses a decimal setting culture independent. Accepts '.' and ',' as decimal separator,
+        /// because older versions could save the value with the decimal separator of the current culture.
+        /// </summary>
+        /// <param name="value">The setting value.</param>
+        /// <param name="defaultValue">The value returned if the setting is empty or invalid.</param>
+        /// <returns>The parsed value.</returns>
+        private static double ParseDouble(string value, double defaultValue)
+        {
+            return !string.IsNullOrWhiteSpace(value)
+                   && double.TryParse(
+                       value.Trim().Replace(',', '.'),
+                       NumberStyles.Float,
+                       CultureInfo.InvariantCulture,
+                       out var result)
+                   && !double.IsNaN(result)
+                   && !double.IsInfinity(result)
+                       ? result
+                       : defaultValue;
+        }
+
+        /// <summary>
         /// Format the Url from FileID to File Path Url
         /// </summary>
         /// <param name="sInputUrl">
@@ -525,22 +547,17 @@ namespace DNN.Modules
         /// </returns>
         private string FormatUrl(string sInputUrl)
         {
-            var newUrl = sInputUrl;
-
-            if (string.IsNullOrEmpty(newUrl) || newUrl.StartsWith("http://"))
+            // Only a page (tab) id needs to be resolved, any other URL (http, https, relative, ...) is used as is
+            if (string.IsNullOrEmpty(sInputUrl)
+                || !int.TryParse(sInputUrl, NumberStyles.None, CultureInfo.InvariantCulture, out var tabId))
             {
-                return newUrl;
+                return sInputUrl;
             }
 
-            var tabId = int.Parse(newUrl);
+            var objTabInfo = TabController.Instance.GetTab(tabId, this.PortalSettings.PortalId, true);
 
-            var objTabController = TabController.Instance;
-
-            var objTabInfo = objTabController.GetTab(tabId, this.PortalSettings.PortalId, true);
-
-            newUrl = objTabInfo.FullUrl;
-
-            return newUrl;
+            // The page was deleted, render the tag without link
+            return objTabInfo == null || objTabInfo.IsDeleted ? null : objTabInfo.FullUrl;
         }
 
         /// <summary>
@@ -1396,15 +1413,11 @@ namespace DNN.Modules
 
                 // World Cloud Ellipticity Setting
                 this.settings.WordCloudSettings.Ellipticity =
-                    !string.IsNullOrEmpty((string)moduleSettings["Ellipticity"])
-                        ? Convert.ToDouble(moduleSettings["Ellipticity"])
-                        : 0.65;
+                    ParseDouble((string)moduleSettings["Ellipticity"], 0.65);
 
                 // World Cloud WeightFactor Setting
                 this.settings.WordCloudSettings.WeightFactor =
-                    !string.IsNullOrEmpty((string)moduleSettings["WeightFactor"])
-                        ? Convert.ToDouble(moduleSettings["WeightFactor"])
-                        : 2.1;
+                    ParseDouble((string)moduleSettings["WeightFactor"], 2.1);
 
                 // World Cloud MinSize Setting
                 this.settings.WordCloudSettings.MinSize = !string.IsNullOrEmpty((string)moduleSettings["MinSize"])

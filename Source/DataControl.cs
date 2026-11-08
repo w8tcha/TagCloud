@@ -111,14 +111,11 @@ namespace DNN.Modules
         /// <param name="objTag">
         /// The obj tag.
         /// </param>
-        /// <returns>
-        /// Returns the Tag ID of the new Tag
-        /// </returns>
-        public static int TagCloudItemsAdd(CustomTags objTag)
+        public static void TagCloudItemsAdd(CustomTags objTag)
         {
-            return
-               DataProvider.Instance().ExecuteScalar<int>(
-                        "TagCloudItemsAdd", objTag.TagId, objTag.Weight, objTag.Tag, objTag.ModuleId, objTag.Url);
+            // The procedure has no result set, ExecuteScalar<int> would throw on the null result
+            DataProvider.Instance().ExecuteNonQuery(
+                "TagCloudItemsAdd", objTag.TagId, objTag.Weight, objTag.Tag, objTag.ModuleId, objTag.Url);
         }
 
         /// <summary>
@@ -141,7 +138,7 @@ namespace DNN.Modules
         /// </param>
         public static void TagCloudItemsAddMl(int tagId, string locale, string tag, int moduleId, string tagUrl)
         {
-            DataProvider.Instance().ExecuteScalar<int>("TagCloudItemsAddMl", tagId, locale, tag, moduleId, tagUrl);
+            DataProvider.Instance().ExecuteNonQuery("TagCloudItemsAddMl", tagId, locale, tag, moduleId, tagUrl);
         }
 
         /// <summary>

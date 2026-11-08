@@ -975,7 +975,7 @@ namespace DNN.Modules
                             && !string.IsNullOrEmpty((string)this.Settings["ActiveForumsTab"])
                             && !string.IsNullOrEmpty((string)this.Settings["ActiveForumsModule"]))
                         {
-                            if (this.ddLTabsVentrianSimple.Items.FindByValue(
+                            if (this.ddLTabsActiveforums.Items.FindByValue(
                                     $"{this.Settings["ActiveForumsTab"]}-{this.Settings["ActiveForumsModule"]}")
                                 == null)
                             {
@@ -1018,12 +1018,16 @@ namespace DNN.Modules
 
                         this.tbCustomTag.Text = e.Item.Cells[4].Text;
 
-                        if (!e.Item.Cells[5].Text.Equals("&nbsp;"))
-                        {
-                            this.ctlTagUrl.Url = e.Item.Cells[5].Text;
-                        }
+                        // Don't keep the URL of a previously edited tag
+                        this.ctlTagUrl.Url = e.Item.Cells[5].Text.Equals("&nbsp;")
+                                                 ? string.Empty
+                                                 : e.Item.Cells[5].Text;
 
                         this.lTagId.Text = e.Item.Cells[0].Text;
+
+                        // Leave the locale edit mode, otherwise the change would be saved as translation
+                        this.lTagLocale.Text = string.Empty;
+
                         this.dDlTagWeight.SelectedValue = e.Item.Cells[6].Text;
                     }
 
@@ -1689,7 +1693,7 @@ namespace DNN.Modules
                 this.FillTabList("newsarticles", tabs);
             }
 
-            if (this.modeSimplegallery && Utility.IsNewsArticlesInstalled())
+            if (this.modeSimplegallery && Utility.IsSimplyGalleryInstalled())
             {
                 this.phVentrianSimple.Visible = true;
 
@@ -1859,15 +1863,13 @@ namespace DNN.Modules
                     new ListItem(this.GetResourceText($"RenderMode_{renderMode}.Text"), renderMode));
             }
 
-            // Setting RenderMode Type
-            try
-            {
-                this.RenderModeType.SelectedValue = (string)this.Settings["RenderMode"];
-            }
-            catch (Exception)
-            {
-                this.RenderModeType.SelectedValue = nameof(RenderMode.Html5);
-            }
+            // Setting RenderMode Type, default is Html5 (same as the view)
+            var savedRenderMode = (string)this.Settings["RenderMode"];
+
+            this.RenderModeType.SelectedValue =
+                !string.IsNullOrEmpty(savedRenderMode) && this.RenderModeType.Items.FindByValue(savedRenderMode) != null
+                    ? savedRenderMode
+                    : nameof(RenderMode.Html5);
 
 
             this.ChangeDimensionInputsVisibility();
