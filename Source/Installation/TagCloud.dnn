@@ -17,13 +17,13 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">10.04.00</dependency>
+        <dependency type="CoreVersion">10.04.01</dependency>
       </dependencies>
       <components>
         <component type="Module">
           <desktopModule>
-            <moduleName>TagCoud</moduleName>
-            <foldername>TagCoud</foldername>
+            <moduleName>TagCloud</moduleName>
+            <foldername>TagCloud</foldername>
             <businessControllerClass>DNN.Modules.TagCloudController, TagCloud</businessControllerClass>
             <supportedFeatures>
               <supportedFeature type="Portable" />
