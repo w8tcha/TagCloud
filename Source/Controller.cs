@@ -43,6 +43,7 @@
 */
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -60,6 +61,51 @@ namespace DNN.Modules
     /// </summary>
     public class TagCloudController : ModuleSettingsBase, IPortable
     {
+        /// <summary>
+        /// The setting value for a transparent background.
+        /// </summary>
+        internal const string Transparent = "transparent";
+
+        /// <summary>
+        /// Normalizes a color value to the stored format: a 6 digit lower case hex value without
+        /// prefix (e.g. "42a5ff") or "transparent". Accepts values with "0x" or "#" prefix and
+        /// 3 digit hex values, as written by older exports.
+        /// </summary>
+        /// <param name="value">The color value.</param>
+        /// <param name="defaultValue">The value returned if the color is missing or invalid.</param>
+        /// <returns>The normalized color.</returns>
+        internal static string NormalizeColor(string value, string defaultValue)
+        {
+            var color = (value ?? string.Empty).Trim();
+
+            if (color.Equals(Transparent, StringComparison.OrdinalIgnoreCase)
+                || color.Equals("#" + Transparent, StringComparison.OrdinalIgnoreCase))
+            {
+                return Transparent;
+            }
+
+            if (color.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                color = color.Substring(2);
+            }
+            else if (color.StartsWith("#", StringComparison.Ordinal))
+            {
+                color = color.Substring(1);
+            }
+
+            if (color.Length == 3)
+            {
+                color = string.Concat(color[0], color[0], color[1], color[1], color[2], color[2]);
+            }
+
+            if (color.Length != 6 || !color.All(Uri.IsHexDigit))
+            {
+                return defaultValue;
+            }
+
+            return color.ToLowerInvariant();
+        }
+
         /// <summary>
         /// Export Module Settings
         /// </summary>
@@ -507,41 +553,9 @@ namespace DNN.Modules
                     sTagCloudWidth = "500px";
                 }
 
-                try
-                {
-                    sTcolor = $"0x{moduleSettings["tcolor"]}";
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sTcolor))
-                    {
-                        sTcolor = "0x000000";
-                    }
-                }
-
-                try
-                {
-                    sHicolor = $"0x{moduleSettings["hicolor"]}";
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sHicolor))
-                    {
-                        sHicolor = "0x42a5ff";
-                    }
-                }
-
-                try
-                {
-                    sBgcolor = $"#{moduleSettings["bgcolor"]}";
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sBgcolor) || sBgcolor.Equals("#transparent"))
-                    {
-                        sBgcolor = "transparent";
-                    }
-                }
+                sTcolor = NormalizeColor((string)moduleSettings["tcolor"], "000000");
+                sHicolor = NormalizeColor((string)moduleSettings["hicolor"], "42a5ff");
+                sBgcolor = NormalizeColor((string)moduleSettings["bgcolor"], Transparent);
 
                 try
                 {
@@ -798,11 +812,11 @@ namespace DNN.Modules
                     objModules.UpdateTabModuleSetting(
                         TagCloud.CurrentTabModuleId, "ExcludeCommon", xmlContent["ExcludeCommon"].InnerText);
                     objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tcolor", xmlContent["tcolor"].InnerText);
+                        TagCloud.CurrentTabModuleId, "tcolor", NormalizeColor(xmlContent["tcolor"]?.InnerText, "000000"));
                     objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "hicolor", xmlContent["hicolor"].InnerText);
+                        TagCloud.CurrentTabModuleId, "hicolor", NormalizeColor(xmlContent["hicolor"]?.InnerText, "42a5ff"));
                     objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "bgcolor", xmlContent["bgcolor"].InnerText);
+                        TagCloud.CurrentTabModuleId, "bgcolor", NormalizeColor(xmlContent["bgcolor"]?.InnerText, Transparent));
 
                     objModules.UpdateTabModuleSetting(
                         TagCloud.CurrentTabModuleId, "TaxMode", xmlContent["taxmode"].InnerText);

@@ -1358,38 +1358,14 @@ namespace DNN.Modules
                 this.settings.TagCloudWValue = string.Empty;
             }
 
-            try
-            {
-                this.settings.Tcolor = (string)moduleSettings["tcolor"];
-            }
-            finally
-            {
-                this.settings.Tcolor = string.IsNullOrEmpty(this.settings.Tcolor)
-                    ? "0x000000"
-                    : $"0x{this.settings.Tcolor}";
-            }
+            this.settings.Tcolor = $"0x{TagCloudController.NormalizeColor((string)moduleSettings["tcolor"], "000000")}";
+            this.settings.Hicolor = $"0x{TagCloudController.NormalizeColor((string)moduleSettings["hicolor"], "42a5ff")}";
 
-            try
-            {
-                this.settings.Hicolor = (string)moduleSettings["hicolor"];
-            }
-            finally
-            {
-                this.settings.Hicolor = string.IsNullOrEmpty(this.settings.Hicolor)
-                    ? "0x42a5ff"
-                    : $"0x{this.settings.Hicolor}";
-            }
+            var bgColor = TagCloudController.NormalizeColor(
+                (string)moduleSettings["bgcolor"],
+                TagCloudController.Transparent);
 
-            try
-            {
-                this.settings.Bgcolor = (string)moduleSettings["bgcolor"];
-            }
-            finally
-            {
-                this.settings.Bgcolor = string.IsNullOrEmpty(this.settings.Bgcolor)
-                    ? "transparent"
-                    : $"#{this.settings.Bgcolor}";
-            }
+            this.settings.Bgcolor = bgColor == TagCloudController.Transparent ? bgColor : $"#{bgColor}";
 
             // Load World Cloud Settings only when needed
             if (this.settings.RenderMode.Equals(RenderMode.WordCloud))

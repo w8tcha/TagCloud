@@ -409,26 +409,16 @@ namespace DNN.Modules
         }
 
         /// <summary>
-        /// Converts a stored color setting (hex without '#') to the "#rrggbb" format required by input type="color".
+        /// Converts a stored color setting (hex without prefix) to the "#rrggbb" format required by input type="color".
         /// </summary>
         /// <param name="storedValue">The stored setting value.</param>
         /// <param name="defaultValue">The default hex value (without '#') used if the stored value is invalid.</param>
         /// <returns>The color in "#rrggbb" format.</returns>
         private static string ToColorInputValue(string storedValue, string defaultValue)
         {
-            var hex = (storedValue ?? string.Empty).Trim().TrimStart('#');
+            var hex = TagCloudController.NormalizeColor(storedValue, defaultValue);
 
-            if (hex.Length == 3 && IsHex(hex))
-            {
-                hex = string.Concat(hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]);
-            }
-
-            if (hex.Length != 6 || !IsHex(hex))
-            {
-                hex = defaultValue;
-            }
-
-            return $"#{hex.ToLowerInvariant()}";
+            return hex == TagCloudController.Transparent ? $"#{defaultValue}" : $"#{hex}";
         }
 
         /// <summary>
@@ -439,16 +429,6 @@ namespace DNN.Modules
         private static string FromColorInputValue(string inputValue)
         {
             return (inputValue ?? string.Empty).Trim().TrimStart('#').ToLowerInvariant();
-        }
-
-        /// <summary>
-        /// Checks if the value only contains hexadecimal characters.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>True if all characters are hexadecimal digits.</returns>
-        private static bool IsHex(string value)
-        {
-            return value.All(Uri.IsHexDigit);
         }
 
         /// <summary>
