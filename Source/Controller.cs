@@ -44,9 +44,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
+
+using DNN.Modules.Objects;
 
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
@@ -166,7 +169,7 @@ namespace DNN.Modules
                 };
 
         /// <summary>
-        /// Export Module Settings
+        /// Export Module Settings and Custom Tags
         /// </summary>
         /// <param name="moduleID">
         ///  Current Module Instance id
@@ -205,6 +208,9 @@ namespace DNN.Modules
                 }
 
                 sBXml.AppendLine("</Settings>");
+
+                ExportCustomTags(moduleID, sBXml);
+
                 sBXml.AppendLine("</TagCloud>");
 
                 return sBXml.ToString();
@@ -218,7 +224,7 @@ namespace DNN.Modules
         }
 
         /// <summary>
-        /// Import Module Settings
+        /// Import Module Settings and Custom Tags
         /// </summary>
         /// <param name="moduleID">
         ///  The Module Id
@@ -238,39 +244,23 @@ namespace DNN.Modules
             {
                 var xmlTagCloud = Globals.GetContent(content, "TagCloud");
 
-                if (!(xmlTagCloud?.SelectSingleNode("Settings") is XmlNode xmlSettings))
+                if (xmlTagCloud == null)
                 {
                     return;
-                }
-
-                // Element names are matched case insensitive, older versions used different casing
-                var elements = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-                foreach (XmlNode node in xmlSettings.ChildNodes)
-                {
-                    if (node.NodeType == XmlNodeType.Element && !elements.ContainsKey(node.Name))
-                    {
-                        elements.Add(node.Name, node.InnerText);
-                    }
                 }
 
                 var tabModules = ModuleController.Instance.GetTabModulesByModule(moduleID)
                     .Where(module => !module.IsDeleted)
                     .ToList();
 
-                foreach (var name in PortableSettings)
+                if (xmlTagCloud.SelectSingleNode("Settings") is XmlNode xmlSettings)
                 {
-                    if (!TryGetElement(elements, name, out var value))
-                    {
-                        continue;
-                    }
+                    ImportSettings(xmlSettings, tabModules);
+                }
 
-                    value = NormalizeSetting(name, value);
-
-                    foreach (var tabModule in tabModules)
-                    {
-                        ModuleController.Instance.UpdateTabModuleSetting(tabModule.TabModuleID, name, value);
-                    }
+                if (xmlTagCloud.SelectSingleNode("CustomTags") is XmlNode xmlCustomTags)
+                {
+                    ImportCustomTags(moduleID, xmlCustomTags);
                 }
 
                 foreach (var tabModule in tabModules)
@@ -282,6 +272,166 @@ namespace DNN.Modules
             catch (Exception exc)
             {
                 Exceptions.LogException(exc);
+            }
+        }
+
+        /// <summary>
+        /// Imports the tab module settings into all instances of the module.
+        /// </summary>
+        /// <param name="xmlSettings">The settings node.</param>
+        /// <param name="tabModules">The tab modules (instances) of the module.</param>
+        private static void ImportSettings(XmlNode xmlSettings, IList<ModuleInfo> tabModules)
+        {
+            // Element names are matched case insensitive, older versions used different casing
+            var elements = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (XmlNode node in xmlSettings.ChildNodes)
+            {
+                if (node.NodeType == XmlNodeType.Element && !elements.ContainsKey(node.Name))
+                {
+                    elements.Add(node.Name, node.InnerText);
+                }
+            }
+
+            foreach (var name in PortableSettings)
+            {
+                if (!TryGetElement(elements, name, out var value))
+                {
+                    continue;
+                }
+
+                value = NormalizeSetting(name, value);
+
+                foreach (var tabModule in tabModules)
+                {
+                    ModuleController.Instance.UpdateTabModuleSetting(tabModule.TabModuleID, name, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes the custom tags of the module including their translations.
+        /// </summary>
+        /// <param name="moduleId">The module id.</param>
+        /// <param name="sBXml">The export XML.</param>
+        private static void ExportCustomTags(int moduleId, StringBuilder sBXml)
+        {
+            var tags = DataControl.TagCloudItemsGetByModule(moduleId);
+
+            if (tags.Count == 0)
+            {
+                return;
+            }
+
+            sBXml.AppendLine("<CustomTags>");
+
+            foreach (var tag in tags)
+            {
+                sBXml.Append("<CustomTag>");
+                sBXml.AppendFormat("<Name>{0}</Name>", XmlUtils.XMLEncode(tag.Tag));
+                sBXml.AppendFormat(CultureInfo.InvariantCulture, "<Weight>{0}</Weight>", tag.Weight);
+                sBXml.AppendFormat("<Url>{0}</Url>", XmlUtils.XMLEncode(tag.Url ?? string.Empty));
+
+                var translations = DataControl.TagCloudItemsGetByLocale(moduleId, tag.TagId);
+
+                if (translations.Count > 0)
+                {
+                    sBXml.Append("<Translations>");
+
+                    foreach (var translation in translations)
+                    {
+                        sBXml.Append("<Translation>");
+                        sBXml.AppendFormat("<Locale>{0}</Locale>", XmlUtils.XMLEncode(translation.Locale));
+                        sBXml.AppendFormat("<Name>{0}</Name>", XmlUtils.XMLEncode(translation.TagMl));
+                        sBXml.AppendFormat("<Url>{0}</Url>", XmlUtils.XMLEncode(translation.UrlMl ?? string.Empty));
+                        sBXml.Append("</Translation>");
+                    }
+
+                    sBXml.Append("</Translations>");
+                }
+
+                sBXml.AppendLine("</CustomTag>");
+            }
+
+            sBXml.AppendLine("</CustomTags>");
+        }
+
+        /// <summary>
+        /// Adds the imported custom tags including their translations to the module.
+        /// Tags with a name that already exists in the module are skipped.
+        /// </summary>
+        /// <param name="moduleId">The module id.</param>
+        /// <param name="xmlCustomTags">The custom tags node.</param>
+        private static void ImportCustomTags(int moduleId, XmlNode xmlCustomTags)
+        {
+            var existingTags = DataControl.TagCloudItemsGetByModule(moduleId);
+
+            var existingNames = new HashSet<string>(
+                existingTags.Select(tag => tag.Tag),
+                StringComparer.OrdinalIgnoreCase);
+
+            // New ids after the highest existing id, the ids are unique per module
+            var nextTagId = existingTags.Count > 0 ? existingTags.Max(tag => tag.TagId) + 1 : 0;
+
+            foreach (XmlNode xmlTag in xmlCustomTags.SelectNodes("CustomTag"))
+            {
+                var name = xmlTag["Name"]?.InnerText.Trim();
+
+                if (string.IsNullOrEmpty(name) || existingNames.Contains(name))
+                {
+                    continue;
+                }
+
+                if (!int.TryParse(
+                        xmlTag["Weight"]?.InnerText,
+                        NumberStyles.Integer,
+                        CultureInfo.InvariantCulture,
+                        out var weight)
+                    || weight < 0)
+                {
+                    weight = 1;
+                }
+
+                var tag = new CustomTags
+                              {
+                                  TagId = nextTagId++,
+                                  Tag = name,
+                                  Weight = weight,
+                                  Url = xmlTag["Url"]?.InnerText ?? string.Empty,
+                                  ModuleId = moduleId
+                              };
+
+                DataControl.TagCloudItemsAdd(tag);
+
+                existingNames.Add(name);
+
+                var xmlTranslations = xmlTag.SelectNodes("Translations/Translation");
+
+                if (xmlTranslations == null)
+                {
+                    continue;
+                }
+
+                foreach (XmlNode xmlTranslation in xmlTranslations)
+                {
+                    var locale = xmlTranslation["Locale"]?.InnerText.Trim();
+                    var translatedName = xmlTranslation["Name"]?.InnerText.Trim();
+
+                    if (string.IsNullOrEmpty(locale) || string.IsNullOrEmpty(translatedName))
+                    {
+                        continue;
+                    }
+
+                    // Remove a left over translation with the same id, the same way the settings page saves it
+                    DataControl.TagCloudItemsDeleteMl(tag.TagId, moduleId, locale);
+
+                    DataControl.TagCloudItemsAddMl(
+                        tag.TagId,
+                        locale,
+                        translatedName,
+                        moduleId,
+                        xmlTranslation["Url"]?.InnerText ?? string.Empty);
+                }
             }
         }
 

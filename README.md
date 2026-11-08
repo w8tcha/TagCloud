@@ -50,7 +50,7 @@ Several sources can be combined:
 ### More
 
 - Caching of the generated tags for faster page loads
-- Import and export of all module settings (`IPortable`)
+- Import and export of the module settings and custom tags including their translations (`IPortable`), e.g. for page and site templates
 - Localized in English, German and Polish
 
 ## Requirements
