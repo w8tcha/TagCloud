@@ -65,7 +65,6 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
-using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
@@ -89,9 +88,16 @@ namespace DNN.Modules
         private readonly INavigationManager navigationManager;
 
         /// <summary>
-        /// The java script helper.
+        /// Opens a script block that runs once the DOM is ready (vanilla replacement for document ready).
         /// </summary>
-        private readonly IJavaScriptLibraryHelper javaScript;
+        private const string DomReadyStart =
+            "(function () { var start = function () {";
+
+        /// <summary>
+        /// Closes the script block opened by <see cref="DomReadyStart"/>.
+        /// </summary>
+        private const string DomReadyEnd =
+            "}; if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); } else { start(); } })();";
 
         /// <summary>
         /// The client resource controller.
@@ -114,7 +120,6 @@ namespace DNN.Modules
         protected TagCloud()
         {
             this.navigationManager = this.DependencyProvider.GetRequiredService<INavigationManager>();
-            this.javaScript = this.DependencyProvider.GetRequiredService<IJavaScriptLibraryHelper>();
             this.clientResourceController = this.DependencyProvider.GetRequiredService<IClientResourceController>();
         }
 
@@ -359,12 +364,10 @@ namespace DNN.Modules
         /// </summary>
         private void AddCanvasScript()
         {
-            javaScript.RequestRegistration(CommonJs.jQuery);
-
             if (HttpContext.Current.Items["tagcanvas_registered"] == null)
             {
                 ScriptManager.RegisterClientScriptInclude(
-                    this, typeof(Page), "tagcanvas", this.ResolveUrl("js/jquery.tagcanvas.min.js"));
+                    this, typeof(Page), "tagcanvas", this.ResolveUrl("js/tagcanvas.min.js"));
 
                 HttpContext.Current.Items.Add("tagcanvas_registered", "true");
             }
@@ -382,14 +385,24 @@ namespace DNN.Modules
 
             var canvasScript = new StringBuilder();
 
-            canvasScript.Append("jQuery(document).ready(function() {");
+            canvasScript.Append(DomReadyStart);
 
-            canvasScript.AppendFormat("jQuery('#{0}').tagcanvas({{", canvasControl.ClientID);
+            if (!this.settings.Bgcolor.Contains("transparent"))
+            {
+                var backColor = this.settings.Bgcolor.Replace("0x", "#");
+
+                canvasScript.AppendFormat(
+                    "document.getElementById('{0}').style.backgroundColor = '{1}';",
+                    canvasControl.ClientID,
+                    backColor);
+            }
+
+            canvasScript.AppendFormat("try {{ TagCanvas.Start('{0}', undefined, {{", canvasControl.ClientID);
 
             var textColor = this.settings.Tcolor.Replace("0x", "#");
             var outlineColor = this.settings.Hicolor.Replace("0x", "#");
 
-            canvasScript.AppendFormat("textFont : '{0}',", this.settings.FontFamily);
+            canvasScript.AppendFormat("textFont : '{0}',", HttpUtility.JavaScriptStringEncode(this.settings.FontFamily));
             canvasScript.AppendFormat("textColour : '{0}',", textColor);
             canvasScript.AppendFormat("outlineColour : '{0}',", outlineColor);
             canvasScript.Append("maxSpeed : 0.03,");
@@ -399,16 +412,10 @@ namespace DNN.Modules
             canvasScript.AppendFormat("weightMode : '{0}',", this.settings.WeightMode);
             canvasScript.AppendFormat("weightSize : '{0}'", this.settings.WeightSize);
 
-            canvasScript.Append("});");
+            // TagCanvas throws if the browser has no canvas support, the tag list is then shown as fallback
+            canvasScript.Append("}); } catch (e) { }");
 
-            if (!this.settings.Bgcolor.Contains("transparent"))
-            {
-                var backColor = this.settings.Bgcolor.Replace("0x", "#");
-
-                canvasScript.AppendFormat("jQuery('#{0}').css('background-color','{1}')", canvasControl.ClientID, backColor);
-            }
-
-            canvasScript.Append("});");
+            canvasScript.Append(DomReadyEnd);
 
             ScriptManager.RegisterStartupScript(
                 this,
@@ -424,15 +431,13 @@ namespace DNN.Modules
         /// <param name="cloudItems">The item list.</param>
         private void AddWordCloudScript(IEnumerable<CloudItem> cloudItems)
         {
-            javaScript.RequestRegistration(CommonJs.jQuery);
-
             if (HttpContext.Current.Items["wordcloudjs_registered"] == null)
             {
                 ScriptManager.RegisterClientScriptInclude(
                     this,
                     typeof(Page),
                     "wordcloudjs",
-                    this.ResolveUrl("js/jquery.wordcloud.js"));
+                    this.ResolveUrl("js/wordcloud.js"));
 
                 HttpContext.Current.Items.Add("wordcloudjs_registered", "true");
             }
@@ -450,12 +455,12 @@ namespace DNN.Modules
 
             var canvasScript = new StringBuilder();
 
-            canvasScript.Append("jQuery(document).ready(function() {");
+            canvasScript.Append(DomReadyStart);
 
             // Setup WordCloud
-            canvasScript.AppendFormat("jQuery('#{0}').wordCloud({{", canvasControl.ClientID);
+            canvasScript.AppendFormat("WordCloud('{0}', {{", canvasControl.ClientID);
 
-            canvasScript.AppendFormat("fontFamily:'{0}',", this.settings.FontFamily);
+            canvasScript.AppendFormat("fontFamily:'{0}',", HttpUtility.JavaScriptStringEncode(this.settings.FontFamily));
             canvasScript.AppendFormat("gridSize: {0},", this.settings.WordCloudSettings.GridSize);
             canvasScript.AppendFormat("ellipticity: {0},", this.settings.WordCloudSettings.Ellipticity);
             canvasScript.Append("center: false,");
@@ -489,7 +494,7 @@ namespace DNN.Modules
             {
                 canvasScript.AppendFormat(
                     currentItem.Equals(itemCount) ? "['{0}', {1}]" : "['{0}', {1}],",
-                    item.Text,
+                    HttpUtility.JavaScriptStringEncode(item.Text),
                     item.Weight);
 
                 currentItem++;
@@ -499,7 +504,7 @@ namespace DNN.Modules
 
             canvasScript.Append("});");
 
-            canvasScript.Append("});");
+            canvasScript.Append(DomReadyEnd);
 
             ScriptManager.RegisterStartupScript(
                 this,

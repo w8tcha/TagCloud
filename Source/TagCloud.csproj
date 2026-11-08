@@ -206,8 +206,8 @@
     <Content Include="Installation\ReleaseNotes.html" />
     <Content Include="Resources\cloud.svg" />
     <Content Include="Resources\exclude.svg" />
-    <Content Include="Resources\js\jquery.tagcanvas.min.js" />
-    <Content Include="Resources\js\jquery.wordcloud.js" />
+    <Content Include="Resources\js\tagcanvas.min.js" />
+    <Content Include="Resources\js\wordcloud.js" />
     <Content Include="Resources\license.txt" />
     <Content Include="Resources\settings.svg" />
     <Content Include="Resources\skins\Blue.css" />

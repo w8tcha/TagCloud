@@ -111,6 +111,14 @@
               <name>jpicker-1.1.6.min.js</name>
             </file>
             <file>
+              <path>js</path>
+              <name>jquery.tagcanvas.min.js</name>
+            </file>
+            <file>
+              <path>js</path>
+              <name>jquery.wordcloud.js</name>
+            </file>
+            <file>
               <path>images</path>
               <name>AlphaBar.png</name>
             </file>
