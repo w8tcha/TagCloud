@@ -153,6 +153,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <!-- DNN platform assemblies: compile against them, but don't copy them into the output (the DNN host provides them) -->
+    <PackageReference Include="DotNetNuke.Core" Version="10.4.1" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.Abstractions" Version="10.4.1" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.DependencyInjection" Version="10.4.1" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.Web" Version="10.4.1" ExcludeAssets="runtime" />
+    <PackageReference Include="DotNetNuke.Web.Client" Version="10.4.1" ExcludeAssets="runtime" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Constants\WeightMode.cs" />
     <Compile Include="Constants\WordCloudShape.cs" />
     <Compile Include="Controller.cs">
@@ -259,7 +267,6 @@
     <None Include="BuildScripts\ModulePackage.targets">
       <SubType>Designer</SubType>
     </None>
-    <None Include="BuildScripts\MSBuild.Community.Tasks.Targets" />
     <None Include="Installation\01.05.00.SqlDataProvider" />
     <None Include="Installation\02.00.00.SqlDataProvider" />
     <EmbeddedResource Include="Settings.ascx.resx">
@@ -324,16 +331,8 @@
     <Extension>zip</Extension>
     <DNNFileName>TagCloud</DNNFileName>
     <PackageName>TagCloud</PackageName>
-    <MSBuildCommunityTasksPath>$(SolutionDir)\packages\MSBuildTasks.1.5.0.235\tools</MSBuildCommunityTasksPath>
   </PropertyGroup>
-  <Import Project="BuildScripts\ModulePackage.Targets" />
+  <Import Project="BuildScripts\ModulePackage.targets" />
   <Target Name="AfterBuild" DependsOnTargets="PackageModule">
-  </Target>
-  <Import Project="..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
   </Target>
 </Project>

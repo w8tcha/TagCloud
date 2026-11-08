@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="MSBuild.Community.Tasks.Targets" />
   <Target Name="PackageModule" Condition=" '$(Configuration)|$(Platform)' == 'Deploy|AnyCPU' ">
-    <XmlRead Prefix="n"
-                    Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
-                    XPath="dotnetnuke/packages/package/@version"
-                    XmlFileName="$(MSBuildProjectDirectory)\Installation\$(DNNFileName).dnn">
-      <Output TaskParameter="Value" PropertyName="Version" />
-    </XmlRead>
+    <XmlPeek XmlInputPath="$(MSBuildProjectDirectory)\Installation\$(DNNFileName).dnn"
+             Query="/dotnetnuke/packages/package/@version">
+      <Output TaskParameter="Result" PropertyName="Version" />
+    </XmlPeek>
     <ItemGroup>
       <DefaultExclude Include="**\.svn\**" />
       <DefaultExclude Include="**\bin\**" />
@@ -55,27 +52,18 @@
     <!-- create the INSTALL RESOURCES.ZIP file -->
     <Copy SourceFiles="@(InstallInclude)" DestinationFolder="$(MSBuildProjectDirectory)\ResourcesZip\%(RecursiveDir)" />
 
-    <CreateItem Include="$(MSBuildProjectDirectory)\ResourcesZip\**\*.*">
-      <Output TaskParameter="Include" ItemName="ResourcesContent" />
-    </CreateItem>
+    <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\ResourcesZip"
+                  DestinationFile="$(MSBuildProjectDirectory)\Package\Resources.$(Extension)"
+                  Overwrite="true" />
 
-    <Zip Files="@(ResourcesContent)" WorkingDirectory="$(MSBuildProjectDirectory)\ResourcesZip" ZipFileName="Resources.$(Extension)" />
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\Resources.$(Extension)" DestinationFolder="package/" />
+    <!-- Create the Install package in the deploy folder in the repository root -->
+    <MakeDir Directories="$(MSBuildProjectDirectory)\..\deploy" />
+    <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\Package"
+                  DestinationFile="$(MSBuildProjectDirectory)\..\deploy\$(PackageName)_$(Version).$(Extension)"
+                  Overwrite="true" />
 
-    <CreateItem Include="$(MSBuildProjectDirectory)\Package\**\*.*">
-      <Output TaskParameter="Include" ItemName="OutputContent" />
-    </CreateItem>
-    <!-- Create the Install package -->
-    <Zip Files="@(OutputContent)" WorkingDirectory="$(MSBuildProjectDirectory)\Package" ZipFileName="$(PackageName)_$(Version).$(Extension)" />
-    <!-- Copy the Install package to the deploy folder in the repository root -->
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(PackageName)_$(Version).$(Extension)" DestinationFolder="$(MSBuildProjectDirectory)\..\deploy\" />
-
-    <RemoveDir Directories ="$(MSBuildProjectDirectory)\Package" />
-    <RemoveDir Directories ="$(MSBuildProjectDirectory)\ResourcesZip" />
-
-    <Delete Files="$(MSBuildProjectDirectory)\Resources.$(Extension)" />
-
-    <Delete Files="$(MSBuildProjectDirectory)\$(PackageName)_$(Version).$(Extension)" />
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\Package" />
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\ResourcesZip" />
 
   </Target>
 </Project>

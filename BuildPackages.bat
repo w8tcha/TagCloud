@@ -16,4 +16,4 @@ If "%Current%" NEQ "15.0" set Current=Current
 
 @set $MSBUILDPATH="%$MSBUILDROOT%\MsBuild\%Current%\Bin\MSBuild.exe"
 
-%$MSBUILDPATH% TagCloud.slnx /p:Configuration=Deploy /t:Clean;Build /p:WarningLevel=0 /flp1:logfile=errors.txt;errorsonly
+%$MSBUILDPATH% TagCloud.slnx /restore /p:Configuration=Deploy /t:Clean;Build /p:WarningLevel=0 /flp1:logfile=errors.txt;errorsonly

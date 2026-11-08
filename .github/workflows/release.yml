@@ -72,7 +72,7 @@ jobs:
 
       - name: Restore NuGet packages
         if: steps.version.outputs.should_release == 'true'
-        run: nuget restore Source/TagCloud.csproj -PackagesDirectory packages
+        run: nuget restore Source/TagCloud.csproj
 
       - name: Build Deploy package
         if: steps.version.outputs.should_release == 'true'
