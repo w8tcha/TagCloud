@@ -26,7 +26,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           [xml]$dnn = Get-Content "Source/Installation/TagCloud.dnn"
-          $version = $dnn.dotnetnuke.packages.package[0].version
+          $version = $dnn.SelectSingleNode("/dotnetnuke/packages/package").GetAttribute("version")
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            Write-Error "Could not read the package version from Source/Installation/TagCloud.dnn."
+            exit 1
+          }
           $tag = "v$version"
           Write-Host "Package version: $version (tag: $tag)"
 
