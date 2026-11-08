@@ -124,7 +124,7 @@
         <asp:TextBox id="tbBgcolor" runat="server" TextMode="Color" />
     </div>
     <div class="dnnFormItem">
-        <dnn:label id="Label1" runat="server" ResourceKey="cbTransparent" controlname="cbTransparent" suffix="?" CssClass="SubHead"></dnn:label>
+        <dnn:label id="Label1" runat="server" ResourceKey="transparent" controlname="cbTransparent" CssClass="SubHead"></dnn:label>
         <asp:CheckBox id="cbTransparent" runat="server" TextAlign="Right" Text="&nbsp;Transparent?" AutoPostBack="true" />
    </div>
    <div class="dnnFormItem">

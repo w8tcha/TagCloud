@@ -1471,8 +1471,6 @@ namespace DNN.Modules
 
             this.FillSkinList();
 
-            this.cbTransparent.Text = $"&nbsp;{Localization.GetString("transparent.Text", this.LocalResourceFile)}";
-
             this.cbTransparent.CheckedChanged += this.CBTransparentCheckedChanged;
 
             this.iBAdd.Command += this.IbAddClick;
