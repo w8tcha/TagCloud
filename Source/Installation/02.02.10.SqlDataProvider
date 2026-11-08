@@ -1,0 +1,68 @@
+﻿/** TagCloud 02.02.10 **/
+
+/** Allow longer culture codes (e.g. ca-ES-valencia) for tag translations **/
+
+IF COL_LENGTH(N'{databaseOwner}{objectQualifier}TagCloudItemsMl', N'Locale') < 100
+	ALTER TABLE {databaseOwner}{objectQualifier}TagCloudItemsMl ALTER COLUMN [Locale] nvarchar(50) NOT NULL
+GO
+
+/** Remove translations of custom tags that no longer exist **/
+
+DELETE ml
+	FROM {databaseOwner}{objectQualifier}TagCloudItemsMl ml
+	WHERE NOT EXISTS (
+		SELECT 1 FROM {databaseOwner}{objectQualifier}TagCloudItems t
+		WHERE t.TagID = ml.TagID AND t.ModuleID = ml.ModuleID)
+GO
+
+/** Drop Existing Stored Procedures **/
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'{databaseOwner}{objectQualifier}TagCloudItemsDelete') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE {databaseOwner}{objectQualifier}TagCloudItemsDelete
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'{databaseOwner}{objectQualifier}TagCloudItemsAddMl') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE {databaseOwner}{objectQualifier}TagCloudItemsAddMl
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'{databaseOwner}{objectQualifier}TagCloudItemsDeleteMl') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE {databaseOwner}{objectQualifier}TagCloudItemsDeleteMl
+GO
+
+/** Deleting a custom tag also deletes its translations in all languages **/
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}TagCloudItemsDelete
+		@TagID int,
+		@ModuleID int
+	AS
+	SET NOCOUNT ON
+	DELETE FROM {databaseOwner}{objectQualifier}TagCloudItemsMl WHERE
+		TagID=@TagID AND ModuleID=@ModuleID
+
+	DELETE FROM {databaseOwner}{objectQualifier}TagCloudItems WHERE
+		TagID=@TagID AND ModuleID=@ModuleID
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}TagCloudItemsAddMl
+		@TagID int,
+		@Locale nvarchar(50),
+		@Tag nvarchar(500),
+		@ModuleID int,
+		@TagUrl nvarchar(500)
+	AS
+	SET NOCOUNT ON
+	INSERT INTO {databaseOwner}{objectQualifier}TagCloudItemsMl
+		(TagID,Locale,Tag,ModuleID,TagUrl)
+		VALUES
+		(@TagID,@Locale,@Tag,@ModuleID,@TagUrl)
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}TagCloudItemsDeleteMl
+		@TagID int,
+		@ModuleID int,
+		@Locale nvarchar(50)
+	AS
+	SET NOCOUNT ON
+	DELETE FROM {databaseOwner}{objectQualifier}TagCloudItemsMl WHERE
+		TagID=@TagID AND ModuleID=@ModuleID AND Locale=@Locale
+GO

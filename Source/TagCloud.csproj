@@ -270,6 +270,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Installation\02.02.03.SqlDataProvider" />
+    <Content Include="Installation\02.02.10.SqlDataProvider" />
     <Content Include="..\LICENSE.md">
       <Link>LICENSE.md</Link>
     </Content>
