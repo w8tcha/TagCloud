@@ -67,8 +67,8 @@
     </CreateItem>
     <!-- Create the Install package -->
     <Zip Files="@(OutputContent)" WorkingDirectory="$(MSBuildProjectDirectory)\Package" ZipFileName="$(PackageName)_$(Version).$(Extension)" />
-    <!-- Copy the Install package to the Packages folder -->
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(PackageName)_$(Version).$(Extension)" DestinationFolder="$(MSBuildProjectDirectory)/packages/" />
+    <!-- Copy the Install package to the deploy folder in the repository root -->
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(PackageName)_$(Version).$(Extension)" DestinationFolder="$(MSBuildProjectDirectory)\..\deploy\" />
 
     <RemoveDir Directories ="$(MSBuildProjectDirectory)\Package" />
     <RemoveDir Directories ="$(MSBuildProjectDirectory)\ResourcesZip" />

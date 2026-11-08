@@ -1,6 +1,6 @@
 <dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="TagCloud" type="Module" version="02.02.08">
+    <package name="TagCloud" type="Module" version="02.02.09">
       <friendlyName>TagCloud</friendlyName>
       <description>
         &lt;h1&gt;TagCloud &lt;/h1&gt;
@@ -17,7 +17,7 @@
       <license src="License.html" />
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">10.01.00</dependency>
+        <dependency type="CoreVersion">10.04.01</dependency>
       </dependencies>
       <components>
         <component type="Module">

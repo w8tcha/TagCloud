@@ -250,5 +250,10 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-Installation/WatchersNET.DNN.Modules.TagCloud.dll
-/Libraries
+
+# Deploy build output (OutputPath is Installation\)
+/Source/Installation/*.dll
+/Source/Libraries
+
+# Module install packages produced by the Deploy build
+/deploy/
