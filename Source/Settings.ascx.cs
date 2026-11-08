@@ -45,6 +45,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -191,14 +192,14 @@ namespace DNN.Modules
         /// <param name="e">The <see cref="System.Web.UI.WebControls.ServerValidateEventArgs" /> instance containing the event data.</param>
         protected void CheckFlashHeight(object source, ServerValidateEventArgs e)
         {
-            if (!Utility.IsNumeric(e.Value))
+            if (!TryParseInt(e.Value, out var value))
             {
                 this.cVFlashHeight.ErrorMessage = Localization.GetString("Error.Text", this.LocalResourceFile);
                 e.IsValid = false;
             }
             else
             {
-                if (int.Parse(e.Value) < 150)
+                if (value < 150)
                 {
                     this.cVFlashHeight.ErrorMessage = Localization.GetString("Error_1.Text", this.LocalResourceFile);
                     e.IsValid = false;
@@ -217,14 +218,14 @@ namespace DNN.Modules
         /// <param name="e">The <see cref="System.Web.UI.WebControls.ServerValidateEventArgs"/> instance containing the event data.</param>
         protected void CheckFlashWidth(object source, ServerValidateEventArgs e)
         {
-            if (!Utility.IsNumeric(e.Value))
+            if (!TryParseInt(e.Value, out var value))
             {
                 this.cVFlashWidth.ErrorMessage = Localization.GetString("Error.Text", this.LocalResourceFile);
                 e.IsValid = false;
             }
             else
             {
-                if (int.Parse(e.Value) < 150)
+                if (value < 150)
                 {
                     this.cVFlashWidth.ErrorMessage = Localization.GetString("Error_1.Text", this.LocalResourceFile);
                     e.IsValid = false;
@@ -243,24 +244,24 @@ namespace DNN.Modules
         /// <param name="e">The <see cref="System.Web.UI.WebControls.ServerValidateEventArgs"/> instance containing the event data.</param>
         protected void CheckWidth(object source, ServerValidateEventArgs e)
         {
-            if (!Utility.IsNumeric(e.Value))
+            if (!TryParseInt(e.Value, out var value))
             {
                 this.cVWidth.ErrorMessage = Localization.GetString("Error.Text", this.LocalResourceFile);
                 e.IsValid = false;
             }
             else
             {
-                if (int.Parse(e.Value) < 150 && this.dDlWidth.SelectedValue.Equals("pixel"))
+                if (value < 150 && this.dDlWidth.SelectedValue.Equals("pixel"))
                 {
                     this.cVWidth.ErrorMessage = Localization.GetString("Error_1.Text", this.LocalResourceFile);
                     e.IsValid = false;
                 }
-                else if (int.Parse(e.Value) < 25 && this.dDlWidth.SelectedValue.Equals("percent"))
+                else if (value < 25 && this.dDlWidth.SelectedValue.Equals("percent"))
                 {
                     this.cVWidth.ErrorMessage = Localization.GetString("Error_2.Text", this.LocalResourceFile);
                     e.IsValid = false;
                 }
-                else if (int.Parse(e.Value) > 100 && this.dDlWidth.SelectedValue.Equals("percent"))
+                else if (value > 100 && this.dDlWidth.SelectedValue.Equals("percent"))
                 {
                     this.cVWidth.ErrorMessage = Localization.GetString("Error_3.Text", this.LocalResourceFile);
                     e.IsValid = false;
@@ -336,6 +337,15 @@ namespace DNN.Modules
         /// </param>
         private void UpdateClick(object sender, EventArgs e)
         {
+            // Show the validator messages instead of saving invalid values
+            this.Page.Validate();
+
+            if (!this.Page.IsValid)
+            {
+                this.AddJavaScript(0);
+                return;
+            }
+
             try
             {
                 this.SaveChanges();
@@ -381,6 +391,54 @@ namespace DNN.Modules
             {
                 this.TagModes.Items.Add(new ListItem("ActiveForums Tags", "ModeActiveforums"));
             }
+        }
+
+        /// <summary>
+        /// Parses a whole number culture independent.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="result">The parsed number.</param>
+        /// <returns>True if the value is a valid whole number.</returns>
+        private static bool TryParseInt(string value, out int result)
+        {
+            return int.TryParse(
+                (value ?? string.Empty).Trim(),
+                NumberStyles.AllowLeadingSign,
+                CultureInfo.InvariantCulture,
+                out result);
+        }
+
+        /// <summary>
+        /// Parses a decimal number culture independent, '.' and ',' are accepted as decimal separator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="result">The parsed number.</param>
+        /// <returns>True if the value is a valid number.</returns>
+        private static bool TryParseDouble(string value, out double result)
+        {
+            return double.TryParse(
+                       (value ?? string.Empty).Trim().Replace(',', '.'),
+                       NumberStyles.Float,
+                       CultureInfo.InvariantCulture,
+                       out result)
+                   && !double.IsNaN(result)
+                   && !double.IsInfinity(result);
+        }
+
+        /// <summary>
+        /// Shows a localized error message, also works in partial (update panel) postbacks.
+        /// </summary>
+        /// <param name="resourceKey">The resource key of the message.</param>
+        private void ShowError(string resourceKey)
+        {
+            var message = HttpUtility.JavaScriptStringEncode(Localization.GetString(resourceKey, this.LocalResourceFile));
+
+            ScriptManager.RegisterStartupScript(
+                this,
+                typeof(Page),
+                $"TagCloudError{this.ModuleId}",
+                $"alert('{message}');",
+                true);
         }
 
         /// <summary>
@@ -611,29 +669,42 @@ namespace DNN.Modules
         {
             var serializer = new XmlSerializer(typeof(List<CustomTags>));
 
-            var sXmlFile = this.txtExportName.Text;
-
-            if (string.IsNullOrEmpty(sXmlFile))
+            try
             {
-                // If Input File Name is Empty
-                sXmlFile = "TagCloudCustomItems.xml";
+                // Only the file name, no folders
+                var sXmlFile = Path.GetFileName((this.txtExportName.Text ?? string.Empty).Trim());
+
+                if (string.IsNullOrEmpty(sXmlFile))
+                {
+                    // If Input File Name is Empty
+                    sXmlFile = "TagCloudCustomItems.xml";
+                }
+                else if (!sXmlFile.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Make Sure File Extension is xml
+                    sXmlFile += ".xml";
+                }
+
+                var folderInfo = FolderManager.Instance.GetFolder(Convert.ToInt32(this.cboFolders.SelectedValue));
+
+                using (var stream = new MemoryStream())
+                {
+                    using (var writer = new StreamWriter(stream, new UTF8Encoding(false), 1024, true))
+                    {
+                        serializer.Serialize(writer, DataControl.TagCloudItemsGetByModule(this.ModuleId));
+                    }
+
+                    // Write the file from the beginning of the serialized content
+                    stream.Position = 0;
+
+                    FileManager.Instance.AddFile(folderInfo, sXmlFile, stream, true);
+                }
             }
-            else if (!sXmlFile.EndsWith(".xml"))
+            catch (Exception exc)
             {
-                // Make Sure File Extension is xml
-                sXmlFile += ".xml";
+                Exceptions.LogException(exc);
+                this.ShowError("ExportFailed.Text");
             }
-
-            var exportFileStream = new FileStream(Path.GetRandomFileName(), FileMode.Create);
-
-            TextWriter tr = new StreamWriter(exportFileStream, Encoding.UTF8);
-            serializer.Serialize(tr, DataControl.TagCloudItemsGetByModule(this.ModuleId));
-
-            var folderInfo = FolderManager.Instance.GetFolder(Convert.ToInt32(this.cboFolders.SelectedValue));
-
-            FileManager.Instance.AddFile(folderInfo, sXmlFile, exportFileStream);
-
-            tr.Close();
 
             this.upGrid.Update();
 
@@ -695,9 +766,10 @@ namespace DNN.Modules
         /// <summary>
         /// Load Localized Tag
         /// </summary>
+        /// <param name="tagId">The tag id.</param>
         /// <param name="tag">The tag.</param>
         /// <param name="tagUrl">The tag URL.</param>
-        private void FillLocalizedTag(string tag, string tagUrl)
+        private void FillLocalizedTag(int tagId, string tag, string tagUrl)
         {
             this.grdTagLocales.Visible = true;
 
@@ -708,13 +780,13 @@ namespace DNN.Modules
             dtLocales.Columns.Add("Tag");
             dtLocales.Columns.Add("TagUrl");
 
-            var localesList = DataControl.TagCloudItemsGetByLocale(this.ModuleId, int.Parse(this.lTagId.Text));
+            var localesList = DataControl.TagCloudItemsGetByLocale(this.ModuleId, tagId);
 
             foreach (var language in LocaleController.Instance.GetLocales(this.PortalId).Values)
             {
                 var drNewRow = dtLocales.NewRow();
 
-                drNewRow["TagID"] = this.lTagId.Text;
+                drNewRow["TagID"] = tagId;
                 drNewRow["Locale"] = language.Code;
 
                 drNewRow["Tag"] = tag;
@@ -1118,11 +1190,14 @@ namespace DNN.Modules
                     break;
                 case "btnDelete":
                     {
-                        DataControl.TagCloudItemsDeleteMl(
-                            int.Parse(e.Item.Cells[0].Text),
-                            this.ModuleId,
-                            e.Item.Cells[4].Text);
-                        this.FillLocalizedTag(string.Empty, string.Empty);
+                        if (!int.TryParse(e.Item.Cells[0].Text, out var tagId))
+                        {
+                            break;
+                        }
+
+                        DataControl.TagCloudItemsDeleteMl(tagId, this.ModuleId, e.Item.Cells[4].Text);
+
+                        this.FillLocalizedTag(tagId, string.Empty, string.Empty);
 
                         this.tbCustomTag.Text = string.Empty;
                         this.lTagId.Text = string.Empty;
@@ -1168,12 +1243,13 @@ namespace DNN.Modules
             {
                 switch ((string)e.CommandArgument)
                 {
-                    case "save":
+                    case "save" when this.EditWordId.HasValue:
                         {
+                            // Update the word that was opened with "Edit", not the one that is selected now
                             var updateItem = new ExcludeWord
                                                  {
                                                      Word = this.tbExlusLst.Text,
-                                                     WordID = int.Parse(this.lBExList.SelectedValue),
+                                                     WordID = this.EditWordId.Value,
                                                      ExcludeWordType = (ExcludeType)Enum.Parse(
                                                          typeof(ExcludeType),
                                                          this.ExclusionType.SelectedValue),
@@ -1182,28 +1258,19 @@ namespace DNN.Modules
 
                             DataControl.TagCloudExcludeWordUpdate(updateItem);
 
-                            this.exclusionWords.AddRange(DataControl.TagCloudExcludeWordsGetByModule(this.TabModuleId));
-
                             this.lBExList.Items.Clear();
 
-                            foreach (var item in this.exclusionWords.Select(
+                            foreach (var item in DataControl.TagCloudExcludeWordsGetByModule(this.TabModuleId).Select(
                                 wordItem => new ListItem { Text = wordItem.Word, Value = wordItem.WordID.ToString() }))
                             {
                                 this.lBExList.Items.Add(item);
                             }
 
-                            this.iBAdd.CommandArgument = "add";
-
-                            this.iBAdd.Text = string.Format(
-                                "<img src=\"{0}\" alt=\"{1}\" title=\"{1}\" style=\"border:0\" /> {1}",
-                                this.ResolveUrl("~/images/add.gif"),
-                                Localization.GetString("AddExWord.Text", this.LocalResourceFile));
-                            this.iBAdd.ToolTip = Localization.GetString("AddExWord.Text", this.LocalResourceFile);
-
-                            this.iBCancel.Visible = false;
+                            this.SetExcludeWordAddMode();
                         }
 
                         break;
+                    case "save":
                     case "add":
                         {
                             var newItem = new ExcludeWord
@@ -1221,6 +1288,8 @@ namespace DNN.Modules
                             var item = new ListItem { Text = newItem.Word, Value = wordId.ToString() };
 
                             this.lBExList.Items.Add(item);
+
+                            this.SetExcludeWordAddMode();
                         }
 
                         break;
@@ -1243,16 +1312,50 @@ namespace DNN.Modules
         /// </param>
         private void IbDeleteClick(object sender, EventArgs e)
         {
-            if (this.lBExList.SelectedItem != null)
+            if (this.lBExList.SelectedItem != null
+                && int.TryParse(this.lBExList.SelectedValue, out var wordId))
             {
-                DataControl.TagCloudExcludeWordDelete(this.TabModuleId, int.Parse(this.lBExList.SelectedValue));
+                DataControl.TagCloudExcludeWordDelete(this.TabModuleId, wordId);
 
                 this.lBExList.Items.RemoveAt(this.lBExList.SelectedIndex);
+
+                // The word that was being edited is gone
+                if (this.EditWordId == wordId)
+                {
+                    this.SetExcludeWordAddMode();
+                }
             }
 
             this.tbExlusLst.Text = string.Empty;
 
             this.AddJavaScript(3);
+        }
+
+        /// <summary>
+        /// Gets or sets the id of the exclusion word that is being edited.
+        /// </summary>
+        private int? EditWordId
+        {
+            get => this.ViewState["EditWordId"] as int?;
+            set => this.ViewState["EditWordId"] = value;
+        }
+
+        /// <summary>
+        /// Switch the exclusion word input back to "add".
+        /// </summary>
+        private void SetExcludeWordAddMode()
+        {
+            this.EditWordId = null;
+
+            this.iBAdd.CommandArgument = "add";
+
+            this.iBAdd.Text = string.Format(
+                "<img src=\"{0}\" alt=\"{1}\" title=\"{1}\" style=\"border:0\" /> {1}",
+                this.ResolveUrl("~/images/add.gif"),
+                Localization.GetString("AddExWord.Text", this.LocalResourceFile));
+            this.iBAdd.ToolTip = Localization.GetString("AddExWord.Text", this.LocalResourceFile);
+
+            this.iBCancel.Visible = false;
         }
 
         /// <summary>
@@ -1266,15 +1369,7 @@ namespace DNN.Modules
         /// </param>
         private void IbCancelClick(object sender, EventArgs e)
         {
-            this.iBAdd.CommandArgument = "add";
-
-            this.iBAdd.Text = string.Format(
-                "<img src=\"{0}\" alt=\"{1}\" title=\"{1}\" style=\"border:0\" /> {1}",
-                this.ResolveUrl("~/images/add.gif"),
-                Localization.GetString("AddExWord.Text", this.LocalResourceFile));
-            this.iBAdd.ToolTip = Localization.GetString("AddExWord.Text", this.LocalResourceFile);
-
-            this.iBCancel.Visible = false;
+            this.SetExcludeWordAddMode();
 
             this.tbExlusLst.Text = string.Empty;
 
@@ -1292,15 +1387,19 @@ namespace DNN.Modules
         /// </param>
         private void IbEditClick(object sender, EventArgs e)
         {
-            if (this.lBExList.SelectedItem != null)
+            // Only switch to the edit mode if a word is selected
+            if (this.lBExList.SelectedItem == null
+                || !int.TryParse(this.lBExList.SelectedValue, out var wordId)
+                || !(DataControl.TagCloudExcludeWordsGetWord(this.TabModuleId, wordId) is ExcludeWord editItem))
             {
-                var editItem = DataControl.TagCloudExcludeWordsGetWord(
-                    this.TabModuleId,
-                    int.Parse(this.lBExList.SelectedValue));
-
-                this.tbExlusLst.Text = editItem.Word;
-                this.ExclusionType.SelectedValue = editItem.ExcludeWordType.ToString();
+                this.AddJavaScript(3);
+                return;
             }
+
+            this.tbExlusLst.Text = editItem.Word;
+            this.ExclusionType.SelectedValue = editItem.ExcludeWordType.ToString();
+
+            this.EditWordId = wordId;
 
             this.iBAdd.CommandArgument = "save";
 
@@ -1340,20 +1439,24 @@ namespace DNN.Modules
 
             try
             {
-                var iFileId = int.Parse(sXmlImport.Substring(7));
+                // The url control returns "FileID=123"
+                if (!sXmlImport.StartsWith("FileID=", StringComparison.OrdinalIgnoreCase)
+                    || !int.TryParse(sXmlImport.Substring(7), out var iFileId)
+                    || !(FileManager.Instance.GetFile(iFileId) is IFileInfo objFileInfo))
+                {
+                    this.ShowError("ImportFailed.Text");
+                    return;
+                }
 
-                var objFileInfo = FileManager.Instance.GetFile(iFileId);
+                List<CustomTags> listImport;
 
-                sXmlImport = this.PortalSettings.HomeDirectoryMapPath + objFileInfo.Folder + objFileInfo.FileName;
+                // Read the content via the file manager, works for secure and database folders too
+                using (var stream = FileManager.Instance.GetFileContent(objFileInfo))
+                {
+                    listImport = (List<CustomTags>)new XmlSerializer(typeof(List<CustomTags>)).Deserialize(stream);
+                }
 
-                var serializer = new XmlSerializer(typeof(List<CustomTags>));
-                TextReader tr = new StreamReader(Path.Combine(this.PortalSettings.HomeDirectoryMapPath, sXmlImport));
-
-                var listImport = (List<CustomTags>)serializer.Deserialize(tr);
-
-                tr.Close();
-
-                if (listImport.Count <= 0)
+                if (listImport == null || listImport.Count <= 0)
                 {
                     return;
                 }
@@ -1385,6 +1488,12 @@ namespace DNN.Modules
                     // Add to Sql
                     DataControl.TagCloudItemsAdd(tag);
                 }
+            }
+            catch (Exception exc)
+            {
+                // e.g. not a valid custom tags xml file
+                Exceptions.LogException(exc);
+                this.ShowError("ImportFailed.Text");
             }
             finally
             {
@@ -1594,8 +1703,6 @@ namespace DNN.Modules
                         break;
                 }
 
-                // Delete Old Setting.
-                ModuleController.Instance.DeleteTabModuleSetting(this.TabModuleId, "TagMode");
             }
 
             if (!string.IsNullOrEmpty((string)this.Settings["ModeCustom"]))
@@ -2269,14 +2376,20 @@ namespace DNN.Modules
             // Setting SkinName
             this.SaveSetting(modController, "SkinName", this.dDlSkins.SelectedValue);
 
-            if (Utility.IsNumeric(this.tbOccurCount.Text))
+            // The old TagMode setting is replaced by the Mode* settings, remove it once they are saved
+            if (this.Settings["TagMode"] != null)
             {
-                this.SaveSetting(modController, "occurcount", this.tbOccurCount.Text);
+                ModuleController.Instance.DeleteTabModuleSetting(this.TabModuleId, "TagMode");
             }
 
-            if (Utility.IsNumeric(this.tbTags.Text))
+            if (TryParseInt(this.tbOccurCount.Text, out var occurCount) && occurCount >= 0)
             {
-                this.SaveSetting(modController, "tagscount", this.tbTags.Text);
+                this.SaveSetting(modController, "occurcount", occurCount.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (TryParseInt(this.tbTags.Text, out var tagsCount) && tagsCount >= 0)
+            {
+                this.SaveSetting(modController, "tagscount", tagsCount.ToString(CultureInfo.InvariantCulture));
             }
 
             this.SaveSetting(modController, "FontFamily", this.FontFamily.Text);
@@ -2378,10 +2491,26 @@ namespace DNN.Modules
             }
 
             this.SaveSetting(modController, "Shape", this.Shape.SelectedValue);
-            this.SaveSetting(modController, "GridSize", this.GridSize.Text);
-            this.SaveSetting(modController, "Ellipticity", this.Ellipticity.Text);
-            this.SaveSetting(modController, "WeightFactor", this.WeightFactor.Text);
-            this.SaveSetting(modController, "MinSize", this.MinSize.Text);
+            // Only save valid numbers, invalid input keeps the previous value
+            if (TryParseInt(this.GridSize.Text, out var gridSize) && gridSize >= 1)
+            {
+                this.SaveSetting(modController, "GridSize", gridSize.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (TryParseDouble(this.Ellipticity.Text, out var ellipticity) && ellipticity > 0)
+            {
+                this.SaveSetting(modController, "Ellipticity", ellipticity.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (TryParseDouble(this.WeightFactor.Text, out var weightFactor) && weightFactor > 0)
+            {
+                this.SaveSetting(modController, "WeightFactor", weightFactor.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (TryParseInt(this.MinSize.Text, out var minSize) && minSize >= 0)
+            {
+                this.SaveSetting(modController, "MinSize", minSize.ToString(CultureInfo.InvariantCulture));
+            }
             this.SaveSetting(modController, "FillBox", this.FillBox.Checked.ToString());
 
             if (!this.modeActiveForums)
@@ -2471,7 +2600,10 @@ namespace DNN.Modules
         /// </param>
         private void TagLocalizeClick(object sender, EventArgs e)
         {
-            this.FillLocalizedTag(this.tbCustomTag.Text, this.ctlTagUrl.Url);
+            if (int.TryParse(this.lTagId.Text, out var localizeTagId))
+            {
+                this.FillLocalizedTag(localizeTagId, this.tbCustomTag.Text, this.ctlTagUrl.Url);
+            }
 
             this.iBTagLocalize.Visible = false;
 
@@ -2622,43 +2754,43 @@ namespace DNN.Modules
         /// </param>
         private void TagSaveClick(object sender, EventArgs e)
         {
-            CustomTags tag = null;
+            var sTagName = (this.tbCustomTag.Text ?? string.Empty).Trim();
 
-            if (!string.IsNullOrEmpty(this.tbCustomTag.Text) && !string.IsNullOrEmpty(this.lTagId.Text))
+            // Check if Tag is only one word
+            if (sTagName.Contains(" "))
             {
-                var sTagName = this.tbCustomTag.Text;
+                sTagName = sTagName.Remove(sTagName.IndexOf(" ", StringComparison.Ordinal));
+            }
 
-                // Check if Tag is only one word
-                if (sTagName.Contains(" "))
-                {
-                    sTagName = sTagName.Remove(sTagName.IndexOf(" ", StringComparison.Ordinal));
-                }
+            if (string.IsNullOrEmpty(sTagName) || !int.TryParse(this.lTagId.Text, out var tagId))
+            {
+                // Keep the edit mode, so the user can enter a name
+                this.ShowError("TagNameRequired.Text");
+                this.AddJavaScript(1);
+                return;
+            }
 
-                tag = new CustomTags
+            var tag = new CustomTags
                           {
                               Weight = int.Parse(this.dDlTagWeight.SelectedValue),
                               Tag = sTagName,
                               ModuleId = this.ModuleId,
                               Url = this.ctlTagUrl.Url,
-                              TagId = int.Parse(this.lTagId.Text)
+                              TagId = tagId
                           };
-            }
 
             if (!string.IsNullOrEmpty(this.lTagLocale.Text))
             {
-                if (tag != null)
-                {
-                    DataControl.TagCloudItemsDeleteMl(tag.TagId, tag.ModuleId, this.lTagLocale.Text);
+                DataControl.TagCloudItemsDeleteMl(tag.TagId, tag.ModuleId, this.lTagLocale.Text);
 
-                    DataControl.TagCloudItemsAddMl(
-                        tag.TagId,
-                        this.lTagLocale.Text,
-                        this.tbCustomTag.Text,
-                        tag.ModuleId,
-                        this.ctlTagUrl.Url);
-                }
+                DataControl.TagCloudItemsAddMl(
+                    tag.TagId,
+                    this.lTagLocale.Text,
+                    this.tbCustomTag.Text.Trim(),
+                    tag.ModuleId,
+                    this.ctlTagUrl.Url);
 
-                this.FillLocalizedTag(string.Empty, string.Empty);
+                this.FillLocalizedTag(tag.TagId, string.Empty, string.Empty);
             }
             else
             {
@@ -2717,12 +2849,15 @@ namespace DNN.Modules
                 this.lblFlashHeight.Visible = false;
                 this.tbFlashWidth.Visible = false;
                 this.tbFlashHeight.Visible = false;
+                this.cVFlashWidth.Enabled = false;
+                this.cVFlashHeight.Enabled = false;
 
                 this.lblTagsCloudWidth.Visible = true;
                 this.lblTagsCloudHeight.Visible = true;
                 this.tbTagsCloudWidth.Visible = true;
                 this.tbTagsCloudHeight.Visible = true;
                 this.dDlWidth.Visible = true;
+                this.cVWidth.Enabled = true;
             }
             else
             {
@@ -2730,12 +2865,15 @@ namespace DNN.Modules
                 this.lblFlashHeight.Visible = true;
                 this.tbFlashWidth.Visible = true;
                 this.tbFlashHeight.Visible = true;
+                this.cVFlashWidth.Enabled = true;
+                this.cVFlashHeight.Enabled = true;
 
                 this.lblTagsCloudWidth.Visible = false;
                 this.lblTagsCloudHeight.Visible = false;
                 this.tbTagsCloudWidth.Visible = false;
                 this.tbTagsCloudHeight.Visible = false;
                 this.dDlWidth.Visible = false;
+                this.cVWidth.Enabled = false;
             }
         }
     }

@@ -534,6 +534,21 @@ namespace DNN.Modules
         }
 
         /// <summary>
+        /// Parses a whole number setting culture independent. Decimal values (e.g. "8.5") are rounded.
+        /// </summary>
+        /// <param name="value">The setting value.</param>
+        /// <param name="defaultValue">The value returned if the setting is empty or invalid.</param>
+        /// <returns>The parsed value.</returns>
+        private static int ParseInt(string value, int defaultValue)
+        {
+            var number = ParseDouble(value, double.NaN);
+
+            return double.IsNaN(number) || number < int.MinValue || number > int.MaxValue
+                       ? defaultValue
+                       : (int)Math.Round(number);
+        }
+
+        /// <summary>
         /// Parses a decimal setting culture independent. Accepts '.' and ',' as decimal separator,
         /// because older versions could save the value with the decimal separator of the current culture.
         /// </summary>
@@ -1233,13 +1248,9 @@ namespace DNN.Modules
                 this.c1.ItemCssClassPrefix += $"-{this.settings.SkinName}";
             }
 
-            this.settings.OccurCount = !string.IsNullOrEmpty((string)moduleSettings["occurcount"])
-                ? int.Parse((string)moduleSettings["occurcount"])
-                : 1;
+            this.settings.OccurCount = ParseInt((string)moduleSettings["occurcount"], 1);
 
-            this.settings.TagCount = !string.IsNullOrEmpty((string)moduleSettings["tagscount"])
-                ? int.Parse((string)moduleSettings["tagscount"])
-                : 30;
+            this.settings.TagCount = ParseInt((string)moduleSettings["tagscount"], 30);
 
             if (!string.IsNullOrEmpty((string)moduleSettings["ExcludeCommon"]))
             {
@@ -1412,9 +1423,7 @@ namespace DNN.Modules
                 }
 
                 // World Cloud GridSize Setting
-                this.settings.WordCloudSettings.GridSize = !string.IsNullOrEmpty((string)moduleSettings["GridSize"])
-                    ? Convert.ToInt32(moduleSettings["GridSize"])
-                    : 8;
+                this.settings.WordCloudSettings.GridSize = ParseInt((string)moduleSettings["GridSize"], 8);
 
                 // World Cloud Ellipticity Setting
                 this.settings.WordCloudSettings.Ellipticity =
@@ -1425,9 +1434,7 @@ namespace DNN.Modules
                     ParseDouble((string)moduleSettings["WeightFactor"], 2.1);
 
                 // World Cloud MinSize Setting
-                this.settings.WordCloudSettings.MinSize = !string.IsNullOrEmpty((string)moduleSettings["MinSize"])
-                    ? Convert.ToInt32(moduleSettings["MinSize"])
-                    : 0;
+                this.settings.WordCloudSettings.MinSize = ParseInt((string)moduleSettings["MinSize"], 0);
 
                 // World Cloud FillBox Setting
                 if (!string.IsNullOrEmpty((string)moduleSettings["FillBox"]))

@@ -602,4 +602,13 @@
   <data name="ExcludeType_EndsWith.Text" xml:space="preserve">
     <value>Endet mit</value>
   </data>
+  <data name="TagNameRequired.Text" xml:space="preserve">
+    <value>Bitte geben Sie einen Tag-Namen ein.</value>
+  </data>
+  <data name="ImportFailed.Text" xml:space="preserve">
+    <value>Die Datei konnte nicht importiert werden. Bitte wählen Sie eine gültige XML-Datei mit eigenen Tags.</value>
+  </data>
+  <data name="ExportFailed.Text" xml:space="preserve">
+    <value>Die eigenen Tags konnten nicht exportiert werden.</value>
+  </data>
 </root>

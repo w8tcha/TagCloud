@@ -600,4 +600,13 @@
   <data name="ExcludeType_EndsWith.Text" xml:space="preserve">
     <value>Kończy się na</value>
   </data>
+  <data name="TagNameRequired.Text" xml:space="preserve">
+    <value>Wprowadź nazwę etykiety.</value>
+  </data>
+  <data name="ImportFailed.Text" xml:space="preserve">
+    <value>Nie można zaimportować pliku. Wybierz prawidłowy plik XML z własnymi etykietami.</value>
+  </data>
+  <data name="ExportFailed.Text" xml:space="preserve">
+    <value>Nie można wyeksportować własnych etykiet.</value>
+  </data>
 </root>
