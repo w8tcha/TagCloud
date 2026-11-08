@@ -13,10 +13,10 @@
 *  *********************************************************************************************
 */
 
-namespace WatchersNET.DNN.Modules.TagCloud.VRK.Controls
-{
-    using System;
+using System;
 
+namespace DNN.Modules.VRK.Controls
+{
     /// <summary>
     /// The cloud item click event args.
     /// </summary>

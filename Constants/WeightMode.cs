@@ -1,6 +1,6 @@
 /*  *********************************************************************************************
 *
-*   WatchersNET.TagCloud - This Module displays the most frequently used words (Tags) of your Portal as a 
+*   TagCloud - This Module displays the most frequently used words (Tags) of your Portal as a 
 *   standard Web 2.0 Tag Cloud, or You can define your own Tags list.  The Tags are links which linked to the Portal Search to 
 *   show all Pages with that Tag.
 *
@@ -8,11 +8,11 @@
 *    as a list of hyperlinks in varying styles depending on a weight. 
 *   This is similar to tag clouds in del.icio.us or Flickr.
 *
-*   Copyright(c) Ingo Herbote (thewatcher@watchersnet.de)
+*   Copyright(c) Ingo Herbote
 *   All rights reserved.
-*   Internet: https://github.com/w8tcha/WatchersNET.TagCloud
+*   Internet: https://github.com/w8tcha/TagCloud
 *
-*   WatchersNET.TagCloud is released under the New BSD License, see below
+*   TagCloud is released under the New BSD License, see below
 ************************************************************************************************
 *
 *   Redistribution and use in source and binary forms, with or without modification, 
@@ -25,7 +25,7 @@
 *   this list of conditions and the following disclaimer in the documentation and/
 *   or other materials provided with the distribution.
 *
-*   * Neither the name of WatchersNET nor the names of its contributors 
+*   * Neither the name of Ingo Herbote nor the names of its contributors 
 *   may be used to endorse or promote products derived from this software without 
 *   specific prior written permission.
 *
@@ -42,7 +42,7 @@
 ************************************************************************************************
 */
 
-namespace WatchersNET.DNN.Modules.TagCloud.Constants
+namespace DNN.Modules.Constants
 {
     /// <summary>
     /// Enumeration for Method to use for displaying tag weights

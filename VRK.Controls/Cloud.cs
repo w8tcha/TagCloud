@@ -13,20 +13,22 @@
 *  *********************************************************************************************
 */
 
-namespace WatchersNET.DNN.Modules.TagCloud.VRK.Controls
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Linq;
-    using System.Web.UI;
-    using System.Web.UI.Design;
-    using System.Web.UI.HtmlControls;
-    using System.Web.UI.WebControls;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Web.UI;
+using System.Web.UI.Design;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
+using TagCloud.VRK.Controls;
+
+namespace DNN.Modules.VRK.Controls
+{
     /// <summary>
     /// The cloud.
     /// </summary>

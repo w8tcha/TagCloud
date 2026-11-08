@@ -1,4 +1,4 @@
-# WatchersNET.TagCloud
+# TagCloud
 This DNN (formerly DotNetNuke) Module displays a Tag as an HTML5 Canvas 3D Cloud, WordCloud ("Wordle" inspired Tag Cloud), or as Plain HTML with Skinning as an list of hyper links in varying styles depending on a weight (Like a Standard Web 2.0 Tag Cloud). 
 
 The Tags are generated from...
@@ -55,26 +55,26 @@ The Color Settings can be easily changed with an Color Picker
 Easy Import and Export of all Module Settings
 
 *Screenshots*
-![wordle" - Word Cloud](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/dnnTagCloudWordle.png?raw=true)
+![wordle" - Word Cloud](https://github.com/w8tcha/TagCloud/blob/master/screenshots/dnnTagCloudWordle.png?raw=true)
 
-![The 3D HTML Tag Cloud](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudCanvas.jpg?raw=true)
+![The 3D HTML Tag Cloud](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudCanvas.jpg?raw=true)
 
-![Sliding-Green Skin](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/Sliding-Green.png?raw=true)
+![Sliding-Green Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/Sliding-Green.png?raw=true)
 
-![Rotated Skin](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudSkinRotated.jpg?raw=true)
+![Rotated Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSkinRotated.jpg?raw=true)
 
-![TagTastic Skin](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloud-TagTastic-Skin.jpg?raw=true)
+![TagTastic Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloud-TagTastic-Skin.jpg?raw=true)
 
-![RoundedButton Skin](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloud-RoundedButton-Skin.jpg?raw=true)
+![RoundedButton Skin](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloud-RoundedButton-Skin.jpg?raw=true)
 
-![Html Skin Orange](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudSkinOrange.jpg?raw=true)
+![Html Skin Orange](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSkinOrange.jpg?raw=true)
 
-![Html Skin Purple](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudSkinPurple.jpg?raw=true)
+![Html Skin Purple](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSkinPurple.jpg?raw=true)
 
-![Basic Settings](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudBasicSettings.jpg?raw=true)
+![Basic Settings](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudBasicSettings.jpg?raw=true)
 
-![Source Settings](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudSourceSettings.jpg?raw=true)
+![Source Settings](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudSourceSettings.jpg?raw=true)
 
-![Exclude Settings](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudExludes.jpg?raw=true)
+![Exclude Settings](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudExludes.jpg?raw=true)
 
-![Custom Tags Export Dialog](https://github.com/w8tcha/WatchersNET.TagCloud/blob/master/screenshots/TagCloudExportDialog.jpg?raw=true)
+![Custom Tags Export Dialog](https://github.com/w8tcha/TagCloud/blob/master/screenshots/TagCloudExportDialog.jpg?raw=true)

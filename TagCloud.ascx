@@ -1,6 +1,6 @@
-<%@ Control Language="c#" AutoEventWireup="True" Codebehind="TagCloud.ascx.cs" Inherits="WatchersNET.DNN.Modules.TagCloud.TagCloud" %>
+<%@ Control Language="c#" AutoEventWireup="True" Codebehind="TagCloud.ascx.cs" Inherits="DNN.Modules.TagCloud" %>
 
-<%@ Register TagPrefix="vrk" Namespace="WatchersNET.DNN.Modules.TagCloud.VRK.Controls" Assembly="WatchersNET.DNN.Modules.TagCloud" %>
+<%@ Register TagPrefix="vrk" Namespace="DNN.Modules.VRK.Controls" Assembly="TagCloud" %>
 
 <asp:Panel id="tagCloudDiv" runat="server" CssClass="TagCloud">
      <vrk:Cloud id="c1" runat="server" ItemCssClassPrefix="CloudItem" DataTextField="Text" DataHrefField="Href" DataTitleField="Title" DataWeightField="Weight">

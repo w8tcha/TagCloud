@@ -13,7 +13,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>WatchersNET.DNN.Modules.TagCloud</AssemblyName>
+    <AssemblyName>TagCloud</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -21,7 +21,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>WatchersNET.DNN.Modules.TagCloud</RootNamespace>
+    <RootNamespace>DNN.Modules</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -262,7 +262,9 @@
     <Content Include="App_LocalResources\TagCloud.ascx.de-DE.resx">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_LocalResources\TagCloud.ascx.resx" />
+    <Content Include="App_LocalResources\TagCloud.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_LocalResources\Settings.ascx.pl-PL.resx" />
     <Content Include="App_LocalResources\TagCloud.ascx.pl-PL.resx" />
     <EmbeddedResource Include="VRK.Controls\SR.resx" />
@@ -329,7 +331,7 @@
   <PropertyGroup>
     <Extension>zip</Extension>
     <DNNFileName>TagCloud</DNNFileName>
-    <PackageName>WatchersNET.TagCloud</PackageName>
+    <PackageName>TagCloud</PackageName>
     <MSBuildCommunityTasksPath>$(SolutionDir)\packages\MSBuildTasks.1.5.0.235\tools</MSBuildCommunityTasksPath>
   </PropertyGroup>
   <Import Project="BuildScripts\ModulePackage.Targets" />

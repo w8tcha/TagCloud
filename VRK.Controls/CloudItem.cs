@@ -13,7 +13,7 @@
 *  *********************************************************************************************
 */
 
-namespace WatchersNET.DNN.Modules.TagCloud.VRK.Controls
+namespace DNN.Modules.VRK.Controls
 {
     /// <summary>
     /// The cloud item.

@@ -13,11 +13,11 @@
 *  *********************************************************************************************
 */
 
-namespace WatchersNET.DNN.Modules.TagCloud.VRK.Controls
-{
-    using System;
-    using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 
+namespace DNN.Modules.VRK.Controls
+{
     /// <summary>
     /// Statistical functions
     /// </summary>

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WatchersNET.DNN.Modules.TagCloud
+namespace DNN.Modules
 {
 
 
@@ -30,6 +30,6 @@ namespace WatchersNET.DNN.Modules.TagCloud
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::WatchersNET.DNN.Modules.TagCloud.VRK.Controls.Cloud c1;
+        protected global::DNN.Modules.VRK.Controls.Cloud c1;
     }
 }
