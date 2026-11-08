@@ -161,24 +161,16 @@ namespace DNN.Modules
         /// </returns>
         private List<CloudItem> GetItems()
         {
-            var logCacheKey = $"CloudItems{this.TabModuleId}";
+            // Localized tags, URLs and common words differ per language, so the cache is per language
+            var cacheKey = TagCloudController.GetItemsCacheKey(
+                this.TabModuleId,
+                Thread.CurrentThread.CurrentUICulture.Name);
 
-            List<CloudItem> itemList;
+            var itemList = this.settings.CacheItems ? DataCache.GetCache(cacheKey) as List<CloudItem> : null;
 
-            if (DataCache.GetCache(logCacheKey) != null)
+            if (itemList == null || itemList.Count == 0)
             {
-                // Get Items From Cache
-                itemList = (List<CloudItem>)DataCache.GetCache(logCacheKey);
-
-                if (itemList.Count == 0)
-                {
-                    itemList = this.GetItemsFromDb();
-                }
-            }
-            else
-            {
-                // Get Items From DB
-                itemList = this.GetItemsFromDb();
+                itemList = this.GetItemsFromDb(cacheKey);
             }
 
             switch (this.settings.RenderMode)
@@ -203,10 +195,11 @@ namespace DNN.Modules
         /// <summary>
         /// Get Tag Items From the Database
         /// </summary>
+        /// <param name="cacheKey">The cache key for the tags.</param>
         /// <returns>
         /// List of Tags
         /// </returns>
-        private List<CloudItem> GetItemsFromDb()
+        private List<CloudItem> GetItemsFromDb(string cacheKey)
         {
             var list = new List<CloudItem>();
 
@@ -241,6 +234,10 @@ namespace DNN.Modules
             if (this.settings.ModeActiveForums && Utility.IsActiveForumsInstalled())
             {
                 this.settings.TagsLinkChk = false;
+
+                // The tags depend on the forums the current user can see, they must not be cached for all users
+                this.settings.CacheItems = false;
+
                 list.AddRange(this.GetItemsFromActiveForums());
             }
 
@@ -281,11 +278,13 @@ namespace DNN.Modules
                 }
             }
 
-            // Make Sure the Tag Count is correct
-            if (list.Count > this.settings.TagCount)
+            // Keep only the tags with the highest weight (in their original order), before sorting
+            if (this.settings.TagCount > 0 && list.Count > this.settings.TagCount)
             {
-                var removeIndex = list.Count - this.settings.TagCount;
-                list.RemoveRange(this.settings.TagCount, removeIndex);
+                var topItems = new HashSet<CloudItem>(
+                    list.OrderByDescending(item => item.Weight).Take(this.settings.TagCount));
+
+                list = list.Where(topItems.Contains).ToList();
             }
 
             // Sort the List?
@@ -319,7 +318,8 @@ namespace DNN.Modules
 
             if (this.settings.CacheItems)
             {
-                DataCache.SetCache($"CloudItems{this.TabModuleId}", list);
+                // Absolute expiration, so tags from other modules and the taxonomy get refreshed
+                DataCache.SetCache(cacheKey, list, DateTime.Now.Add(TagCloudController.ItemsCacheDuration));
             }
 
             return list;
@@ -483,13 +483,18 @@ namespace DNN.Modules
             var enumerable = cloudItems as IList<CloudItem> ?? cloudItems.ToList();
             var itemCount = enumerable.Count;
 
+            // The word cloud uses weight * weightFactor as font size, raw weights (usage counts) can be far
+            // too large for the canvas, so the weights are scaled to a fixed range
+            var minWeight = itemCount > 0 ? enumerable.Min(item => item.Weight) : 0;
+            var maxWeight = itemCount > 0 ? enumerable.Max(item => item.Weight) : 0;
+
             foreach (var item in enumerable)
             {
                 canvasScript.AppendFormat(
                     CultureInfo.InvariantCulture,
                     currentItem.Equals(itemCount) ? "['{0}', {1}]" : "['{0}', {1}],",
                     HttpUtility.JavaScriptStringEncode(item.Text),
-                    item.Weight);
+                    Math.Round(ScaleWordCloudWeight(item.Weight, minWeight, maxWeight), 1));
 
                 currentItem++;
             }
@@ -506,6 +511,26 @@ namespace DNN.Modules
                 $"CanvasScript{this.tagCloudDiv.ClientID}",
                 canvasScript.ToString(),
                 true);
+        }
+
+        /// <summary>
+        /// Scales a tag weight linear to the range used by the word cloud (5 - 25, multiplied with the weight factor).
+        /// </summary>
+        /// <param name="weight">The tag weight.</param>
+        /// <param name="minWeight">The lowest weight of all tags.</param>
+        /// <param name="maxWeight">The highest weight of all tags.</param>
+        /// <returns>The scaled weight.</returns>
+        private static double ScaleWordCloudWeight(double weight, double minWeight, double maxWeight)
+        {
+            const double MinScaled = 5;
+            const double MaxScaled = 25;
+
+            if (maxWeight - minWeight < double.Epsilon)
+            {
+                return (MinScaled + MaxScaled) / 2;
+            }
+
+            return MinScaled + ((MaxScaled - MinScaled) * (weight - minWeight) / (maxWeight - minWeight));
         }
 
         /// <summary>
@@ -770,35 +795,22 @@ namespace DNN.Modules
 
             try
             {
-                ////////////////////////
+                // The weight of a term is how often it is used, terms that are not used get the lowest weight
+                var usageCounts = DataControl.GetTermUsageCounts();
+
                 foreach (var term in this.GetTerms())
                 {
-                    CloudItem entry;
+                    var weight = usageCounts.TryGetValue(term.TermId, out var count) && count > 0 ? count : 1;
 
-                    if (term.Weight > 0)
-                    {
-                        entry = new CloudItem(
+                    var entry = new CloudItem(
+                        Utility.RemoveIllegalCharacters(term.Name),
+                        weight,
+                        string.Format(
+                            "{0}?{2}{1}",
+                            this.navigationManager.NavigateURL(this.settings.SearchTabId),
                             Utility.RemoveIllegalCharacters(term.Name),
-                            term.Weight,
-                            string.Format(
-                                "{0}?{2}{1}",
-                                this.navigationManager.NavigateURL(this.settings.SearchTabId),
-                                Utility.RemoveIllegalCharacters(term.Name),
-                                this.settings.SearchTaxQueryString),
-                            term.Description);
-                    }
-                    else
-                    {
-                        entry = new CloudItem(
-                            Utility.RemoveIllegalCharacters(term.Name),
-                            term.TermId,
-                            string.Format(
-                                "{0}?{2}{1}",
-                                this.navigationManager.NavigateURL(this.settings.SearchTabId),
-                                Utility.RemoveIllegalCharacters(term.Name),
-                                this.settings.SearchTaxQueryString),
-                            term.Description);
-                    }
+                            this.settings.SearchTaxQueryString),
+                        term.Description);
 
                     list.Add(entry);
                 }

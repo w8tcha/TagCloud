@@ -2330,12 +2330,7 @@ namespace DNN.Modules
                 }
             }
 
-            var sLogCacheKey = $"CloudItems{this.TabModuleId}";
-
-            if (DataCache.GetCache(sLogCacheKey) != null)
-            {
-                DataCache.RemoveCache(sLogCacheKey);
-            }
+            TagCloudController.ClearItemsCache(this.TabModuleId, this.PortalId);
 
             if (!string.IsNullOrEmpty(this.tbTcolor.Text))
             {

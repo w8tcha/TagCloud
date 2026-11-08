@@ -63,6 +63,33 @@ namespace DNN.Modules
     public class DataControl : PortalModuleBase
     {
         /// <summary>
+        /// Gets how often each taxonomy term is used by content items.
+        /// </summary>
+        /// <returns>
+        /// The usage count by term id.
+        /// </returns>
+        public static Dictionary<int, int> GetTermUsageCounts()
+        {
+            var counts = new Dictionary<int, int>();
+
+            var provider = DataProvider.Instance();
+
+            // No user input in the statement, the table name comes from the provider configuration
+            var sql =
+                $"SELECT TermID, COUNT(*) FROM {provider.DatabaseOwner}{provider.ObjectQualifier}ContentItems_Tags GROUP BY TermID";
+
+            using (var reader = provider.ExecuteSQL(sql))
+            {
+                while (reader.Read())
+                {
+                    counts[reader.GetInt32(0)] = reader.GetInt32(1);
+                }
+            }
+
+            return counts;
+        }
+
+        /// <summary>
         /// Get Tag Cloud Items From Active Forums SQL
         /// </summary>
         /// <param name="portalId">

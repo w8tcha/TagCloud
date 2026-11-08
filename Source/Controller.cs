@@ -52,6 +52,7 @@ using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Exceptions;
+using DotNetNuke.Services.Localization;
 
 namespace DNN.Modules
 {
@@ -64,6 +65,38 @@ namespace DNN.Modules
         /// The setting value for a transparent background.
         /// </summary>
         internal const string Transparent = "transparent";
+
+        /// <summary>
+        /// How long the generated tags are cached.
+        /// </summary>
+        internal static readonly TimeSpan ItemsCacheDuration = TimeSpan.FromMinutes(15);
+
+        /// <summary>
+        /// Gets the cache key for the generated tags of a module instance in a language.
+        /// </summary>
+        /// <param name="tabModuleId">The tab module id.</param>
+        /// <param name="cultureCode">The culture code, e.g. "de-DE".</param>
+        /// <returns>The cache key.</returns>
+        internal static string GetItemsCacheKey(int tabModuleId, string cultureCode)
+        {
+            return $"TagCloud_Items_{tabModuleId}_{cultureCode}";
+        }
+
+        /// <summary>
+        /// Removes the cached tags of a module instance in all languages of the portal.
+        /// </summary>
+        /// <param name="tabModuleId">The tab module id.</param>
+        /// <param name="portalId">The portal id.</param>
+        internal static void ClearItemsCache(int tabModuleId, int portalId)
+        {
+            foreach (var cultureCode in LocaleController.Instance.GetLocales(portalId).Keys)
+            {
+                DataCache.RemoveCache(GetItemsCacheKey(tabModuleId, cultureCode));
+            }
+
+            // Cache key used by older versions
+            DataCache.RemoveCache($"CloudItems{tabModuleId}");
+        }
 
         /// <summary>
         /// Normalizes a color value to the stored format: a 6 digit lower case hex value without
@@ -243,7 +276,7 @@ namespace DNN.Modules
                 foreach (var tabModule in tabModules)
                 {
                     // Remove the cached tags, so the imported settings are used right away
-                    DataCache.RemoveCache($"CloudItems{tabModule.TabModuleID}");
+                    ClearItemsCache(tabModule.TabModuleID, tabModule.PortalID);
                 }
             }
             catch (Exception exc)

@@ -28,6 +28,9 @@
         <li>Fixed the Simple Gallery tag source and the Active Forums module selection not being kept</li>
         <li>Fixed editing a tag after editing a translation saving the change as translation</li>
         <li>Fixed exporting and importing module content (page and site templates): the export failed, and the import wrote the settings into a different module</li>
+        <li>Fixed the tag cloud showing arbitrary tags instead of the most used ones when there are more tags than the maximum number</li>
+        <li>Taxonomy tags are now weighted by how often they are used, and the word cloud scales the weights so large counts fit on the canvas</li>
+        <li>Fixed cached tags being shown in the wrong language, never expiring, and Active Forums tags of one user being cached for all users</li>
     </ul>
 </body>
 </html>
