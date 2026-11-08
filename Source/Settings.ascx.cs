@@ -48,6 +48,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml.Serialization;
@@ -383,6 +384,31 @@ namespace DNN.Modules
         }
 
         /// <summary>
+        /// Gets the localized text for a key from the local resource file.
+        /// </summary>
+        /// <param name="key">The resource key.</param>
+        /// <returns>The localized text.</returns>
+        protected string GetResourceText(string key)
+        {
+            return Localization.GetString(key, this.LocalResourceFile);
+        }
+
+        /// <summary>
+        /// Localizes the header texts of a data grid, the markup header text is used as resource key prefix.
+        /// </summary>
+        /// <param name="grid">The data grid.</param>
+        private void LocalizeGridHeaders(DataGrid grid)
+        {
+            foreach (DataGridColumn column in grid.Columns)
+            {
+                if (!string.IsNullOrEmpty(column.HeaderText))
+                {
+                    column.HeaderText = this.GetResourceText($"{column.HeaderText}.Header");
+                }
+            }
+        }
+
+        /// <summary>
         /// Converts a stored color setting (hex without '#') to the "#rrggbb" format required by input type="color".
         /// </summary>
         /// <param name="storedValue">The stored setting value.</param>
@@ -485,13 +511,19 @@ namespace DNN.Modules
             sbDialogJs.Append("$(document).ready(function() {");
 
             // Import Dialog
+            var cancelText = HttpUtility.JavaScriptStringEncode(Localization.GetString("Cancel", Localization.SharedResourceFile));
+            var importText = HttpUtility.JavaScriptStringEncode(Localization.GetString("cmdImport.Text", this.LocalResourceFile));
+            var exportText = HttpUtility.JavaScriptStringEncode(Localization.GetString("cmdExport.Text", this.LocalResourceFile));
+
             sbDialogJs.Append("jQuery('#ImportDialog').dialog({");
             sbDialogJs.Append("autoOpen: false,");
             sbDialogJs.Append("width: 350,");
+            sbDialogJs.AppendFormat("title: \"{0}\",", importText);
             sbDialogJs.AppendFormat(
-                "buttons: {{ \"Cancel\": function () {{ jQuery(this).dialog(\"close\"); }}, \"{1}\": function () {{ __doPostBack('{0}', '');jQuery(this).dialog(\"close\"); }} }},",
+                "buttons: {{ \"{2}\": function () {{ jQuery(this).dialog(\"close\"); }}, \"{1}\": function () {{ __doPostBack('{0}', '');jQuery(this).dialog(\"close\"); }} }},",
                 this.cmdImport.ClientID.Replace("_", "$"),
-                Localization.GetString("cmdImport.Text", this.LocalResourceFile));
+                importText,
+                cancelText);
             sbDialogJs.Append("open: function (type, data) {");
             sbDialogJs.Append("jQuery(this).parent().appendTo(\"form\");");
             sbDialogJs.Append("}");
@@ -501,11 +533,13 @@ namespace DNN.Modules
             sbDialogJs.Append("jQuery('#ExportDialog').dialog({");
             sbDialogJs.Append("autoOpen: false,");
             sbDialogJs.Append("width: 350,");
+            sbDialogJs.AppendFormat("title: \"{0}\",", exportText);
             sbDialogJs.AppendFormat(
-                "buttons: {{ \"Cancel\": function () {{ jQuery(this).dialog(\"close\"); }}, \"{2}\": function () {{ __doPostBack('{0}', '');alert('{1}'); jQuery(this).dialog(\"close\"); }} }},",
+                "buttons: {{ \"{3}\": function () {{ jQuery(this).dialog(\"close\"); }}, \"{2}\": function () {{ __doPostBack('{0}', '');alert('{1}'); jQuery(this).dialog(\"close\"); }} }},",
                 this.cmdExport.ClientID.Replace("_", "$"),
-                Localization.GetString("TagsExported.Text", this.LocalResourceFile),
-                Localization.GetString("cmdExport.Text", this.LocalResourceFile));
+                HttpUtility.JavaScriptStringEncode(Localization.GetString("TagsExported.Text", this.LocalResourceFile)),
+                exportText,
+                cancelText);
             sbDialogJs.Append("open: function (type, data) {");
             sbDialogJs.Append("jQuery(this).parent().appendTo(\"form\");");
             sbDialogJs.Append("}");
@@ -1158,7 +1192,7 @@ namespace DNN.Modules
                                                      WordID = int.Parse(this.lBExList.SelectedValue),
                                                      ExcludeWordType = (ExcludeType)Enum.Parse(
                                                          typeof(ExcludeType),
-                                                         this.ExclusionType.SelectedItem.Text),
+                                                         this.ExclusionType.SelectedValue),
                                                      ModuleID = this.TabModuleId
                                                  };
 
@@ -1194,7 +1228,7 @@ namespace DNN.Modules
                                                   WordID = 0,
                                                   ExcludeWordType = (ExcludeType)Enum.Parse(
                                                       typeof(ExcludeType),
-                                                      this.ExclusionType.SelectedItem.Text),
+                                                      this.ExclusionType.SelectedValue),
                                                   ModuleID = this.TabModuleId
                                               };
 
@@ -1453,11 +1487,12 @@ namespace DNN.Modules
                 this.ResolveUrl("exclude.svg"),
                 Localization.GetString("lExcludeOpt.Text", this.LocalResourceFile));
 
-            this.rangevalidator1.ErrorMessage = Localization.GetString("rangevalidator1.Text", this.LocalResourceFile);
-
             this.lCustomTag.Text = Localization.GetString("lCustomTag.Text", this.LocalResourceFile);
             this.lTagWeight.Text = Localization.GetString("lTagWeight.Text", this.LocalResourceFile);
             this.lTagUrl.Text = Localization.GetString("lTagUrl.Text", this.LocalResourceFile);
+
+            this.LocalizeGridHeaders(this.grdTagList);
+            this.LocalizeGridHeaders(this.grdTagLocales);
 
             this.lblImport.Text = string.Format(
                 "<img src=\"{0}\" alt=\"{1}\" title=\"{1}\" style=\"border:0\" /> {1}",
@@ -1769,8 +1804,13 @@ namespace DNN.Modules
                 this.tbTags.Text = "30";
             }
 
-            this.ExclusionType.DataSource = Enum.GetNames(typeof(ExcludeType));
-            this.ExclusionType.DataBind();
+            this.ExclusionType.Items.Clear();
+
+            foreach (var excludeType in Enum.GetNames(typeof(ExcludeType)))
+            {
+                this.ExclusionType.Items.Add(
+                    new ListItem(this.GetResourceText($"ExcludeType_{excludeType}.Text"), excludeType));
+            }
 
             // Setting Font Family
             if (!string.IsNullOrEmpty((string)this.Settings["FontFamily"]))
@@ -1831,8 +1871,13 @@ namespace DNN.Modules
                 this.CanvasWeightSize.Text = "1.0";
             }
 
-            this.RenderModeType.DataSource = Enum.GetNames(typeof(RenderMode));
-            this.RenderModeType.DataBind();
+            this.RenderModeType.Items.Clear();
+
+            foreach (var renderMode in Enum.GetNames(typeof(RenderMode)))
+            {
+                this.RenderModeType.Items.Add(
+                    new ListItem(this.GetResourceText($"RenderMode_{renderMode}.Text"), renderMode));
+            }
 
             // Setting RenderMode Type
             try
@@ -2030,7 +2075,6 @@ namespace DNN.Modules
             }
 
             this.tbTcolor.Text = ToColorInputValue((string)this.Settings["tcolor"], "000000");
-            this.tbTcolor2.Text = ToColorInputValue((string)this.Settings["tcolor2"], "000000");
             this.tbHicolor.Text = ToColorInputValue((string)this.Settings["hicolor"], "42a5ff");
 
             var bgColor = (string)this.Settings["bgcolor"];
@@ -2048,21 +2092,12 @@ namespace DNN.Modules
                 this.cbTransparent.Checked = false;
             }
 
-            if (!string.IsNullOrEmpty((string)this.Settings["tspeed"]))
-            {
-                this.tbTspeed.Text = (string)this.Settings["tspeed"];
-            }
-            else
-            {
-                this.tbTspeed.Text = "75";
-            }
-
             // Word Cloud Settings
             this.Shape.Items.Clear();
 
             foreach (var shape in Enum.GetNames(typeof(WordCloudShape)))
             {
-                this.Shape.Items.Add(new ListItem(shape, shape));
+                this.Shape.Items.Add(new ListItem(this.GetResourceText($"Shape_{shape}.Text"), shape));
             }
 
             // Word Cloud Shape Setting
@@ -2325,11 +2360,6 @@ namespace DNN.Modules
                 this.SaveSetting(modController, "tcolor", FromColorInputValue(this.tbTcolor.Text));
             }
 
-            if (!string.IsNullOrEmpty(this.tbTcolor2.Text))
-            {
-                this.SaveSetting(modController, "tcolor2", FromColorInputValue(this.tbTcolor2.Text));
-            }
-
             if (!string.IsNullOrEmpty(this.tbHicolor.Text))
             {
                 this.SaveSetting(modController, "hicolor", FromColorInputValue(this.tbHicolor.Text));
@@ -2345,11 +2375,6 @@ namespace DNN.Modules
                 {
                     this.SaveSetting(modController, "bgcolor", FromColorInputValue(this.tbBgcolor.Text));
                 }
-            }
-
-            if (!string.IsNullOrEmpty(this.tbTspeed.Text))
-            {
-                this.SaveSetting(modController, "tspeed", this.tbTspeed.Text);
             }
 
             // Save Ventrian Tab Setting

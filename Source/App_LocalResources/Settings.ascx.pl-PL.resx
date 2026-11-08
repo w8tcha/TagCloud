@@ -138,12 +138,6 @@
   <data name="Cancel.Text" xml:space="preserve">
     <value>Anuluj edytowanie</value>
   </data>
-  <data name="cbCurrentEndDate.Text" xml:space="preserve">
-    <value>Zawsze używaj bieżącej daty jako końcowej</value>
-  </data>
-  <data name="checkAllBlogs.Text" xml:space="preserve">
-    <value>Użyj wszystkich blogów</value>
-  </data>
   <data name="cmdExport.Text" xml:space="preserve">
     <value>Wyeksportuj własne etykiety</value>
   </data>
@@ -153,7 +147,7 @@
   <data name="colour.Text" xml:space="preserve">
     <value>Kolor</value>
   </data>
-  <data name="ControlTitle_settings.Text" xml:space="preserve">
+  <data name="ControlTitle_edit.Text" xml:space="preserve">
     <value>Ustawienia chmury</value>
   </data>
   <data name="CustomSearchPageLabel.Help" xml:space="preserve">
@@ -169,16 +163,13 @@
     <value>Usuń zaznaczone słowo</value>
   </data>
   <data name="DeleteLocale.Text" xml:space="preserve">
-    <value>Usunąć wybrane locale?</value>
+    <value>Usunąć wybraną lokalizację?</value>
   </data>
   <data name="DeleteTag.Text" xml:space="preserve">
     <value>Usunąć wybraną etykietę?</value>
   </data>
   <data name="EditExWord.Text" xml:space="preserve">
     <value>Edytuj zaznaczone słowo</value>
-  </data>
-  <data name="EditTag.Text" xml:space="preserve">
-    <value>Edytuj etykietę wybraną z listy.</value>
   </data>
   <data name="EllipticityLabel.Help" xml:space="preserve">
     <value>Eliptyczność okręgu formowanego przez słowo.</value>
@@ -199,7 +190,7 @@
     <value>Wartość nie może być wyższa niż 100%.</value>
   </data>
   <data name="FillBoxLabel.Help" xml:space="preserve">
-    <value>Prawda oznaczy cały obszar zawierający słowo jako wypełniony, następne krótsze słowa mogą pasować w przerwę.</value>
+    <value>Jeśli włączone, cały obszar zawierający słowo zostanie oznaczony jako wypełniony, więc mniejsze słowa nie zostaną umieszczone w przerwach.</value>
   </data>
   <data name="FillBoxLabel.Text" xml:space="preserve">
     <value>Obszar wypełniania</value>
@@ -228,9 +219,6 @@
   <data name="lblChooseVoc.Text" xml:space="preserve">
     <value>Wybierz słownik</value>
   </data>
-  <data name="lblColPic.Text" xml:space="preserve">
-    <value>&lt;-- Kliknij, aby wybrać kolor</value>
-  </data>
   <data name="lblCustomTag.Help" xml:space="preserve">
     <value>Utwórz lub zmodyfikuj etykietę, określając nazwę, wagę i adres URL.</value>
   </data>
@@ -243,14 +231,8 @@
   <data name="lblCustomTags.Text" xml:space="preserve">
     <value>Własna lista etykiet</value>
   </data>
-  <data name="lblEndDate.Help" xml:space="preserve">
-    <value>Data końcowa zawsze dzisiaj</value>
-  </data>
-  <data name="lblEndDate.Text" xml:space="preserve">
-    <value>Data końcowa</value>
-  </data>
   <data name="lblExcludeCommon.Help" xml:space="preserve">
-    <value>Wyłącz częste słowa bieżącego języka, częste słowa przechowywane w plikach językowych.</value>
+    <value>Wyklucz częste słowa bieżącego języka. Częste słowa są przechowywane w plikach językowych.</value>
   </data>
   <data name="lblExcludeCommon.Text" xml:space="preserve">
     <value>Wyklucz częste słowa</value>
@@ -303,12 +285,6 @@
   <data name="lblModuleActiveforums.Text" xml:space="preserve">
     <value>Wybierz instancję modułu Active Forums</value>
   </data>
-  <data name="lblModuleDnnBlog.Help" xml:space="preserve">
-    <value>Wybierz instancję modułu, jeśli dowolna instancja została odnaleziona na wybranej zakładce.</value>
-  </data>
-  <data name="lblModuleDnnBlog.Text" xml:space="preserve">
-    <value>Wybierz instancję modułu Blog DNN</value>
-  </data>
   <data name="lblModuleVentrianNews.Help" xml:space="preserve">
     <value>Wybierz instancję modułu, jeśli dowolna instancja zostanie odnaleziona na wybranej zakładce.</value>
   </data>
@@ -322,13 +298,10 @@
     <value>Wybierz instancję modułu galerii</value>
   </data>
   <data name="lblOccurCount.Help" xml:space="preserve">
-    <value>Wyświetlanie etykiet ze zdefiniowaną wartość minimalnego występowania.</value>
+    <value>Wyświetlaj tylko etykiety o zdefiniowanej minimalnej liczbie wystąpień.</value>
   </data>
   <data name="lblOccurCount.Text" xml:space="preserve">
     <value>Minimalna waga etykiety</value>
-  </data>
-  <data name="lblPortalId.Help" xml:space="preserve">
-    <value>Tutaj można określić ID portalu, z którego mają być wyświetlane wyniki.</value>
   </data>
   <data name="lblRenderItemWeight.Help" xml:space="preserve">
     <value>Włączenie tej opcji wyświetli numer wagowy przy każdej etykiecie.</value>
@@ -337,7 +310,7 @@
     <value>Wyświetlaj wagę elementu etykiety</value>
   </data>
   <data name="lblRenderMode.Help" xml:space="preserve">
-    <value>Wybierz tryb wyświetlania chmury, do wyboru są tryby Flash, HTML5 lub Podstawowy HTML</value>
+    <value>Wybierz tryb wyświetlania chmury: BasicHtml (zwykły HTML), Html5 (chmura 3D Canvas) lub WordCloud.</value>
   </data>
   <data name="lblRenderMode.Text" xml:space="preserve">
     <value>Tryb wyświetlania</value>
@@ -348,14 +321,8 @@
   <data name="lblRenderUl.Text" xml:space="preserve">
     <value>Wyświetlaj jako UL</value>
   </data>
-  <data name="lblSelectBlogs.Help" xml:space="preserve">
-    <value>Wybierz blogi do użycia, lub wybierz "Użyj wszystkich blogów", aby zawsze używać wszystkich blogów.</value>
-  </data>
-  <data name="lblSelectBlogs.Text" xml:space="preserve">
-    <value>Wybierz blogi</value>
-  </data>
   <data name="lblSkin.Help" xml:space="preserve">
-    <value>Można zdefiniować motyw dla chmury HTML (nie Flash).</value>
+    <value>Można zdefiniować motyw dla chmury HTML.</value>
   </data>
   <data name="lblSkin.Text" xml:space="preserve">
     <value>Motyw chmury HTML</value>
@@ -365,12 +332,6 @@
   </data>
   <data name="lblSortTags.Text" xml:space="preserve">
     <value>Sortowanie etykiet</value>
-  </data>
-  <data name="lblStartDate.Help" xml:space="preserve">
-    <value>Zdefiniuj datę początkową, aby uzyskać referentów z dziennika witryny</value>
-  </data>
-  <data name="lblStartDate.Text" xml:space="preserve">
-    <value>Data początkowa</value>
   </data>
   <data name="lblTagMode.Help" xml:space="preserve">
     <value>Wybierz spomiędzy etykiet generowanych z elementów wyszukiwania lub utwórz własną listę etykiet.</value>
@@ -403,7 +364,7 @@
     <value>Separator etykiet</value>
   </data>
   <data name="lblTagsLink.Help" xml:space="preserve">
-    <value>Chmura może zawierać odnośnik do wyszukiwania portalu za pomocą bieżącego słowa.</value>
+    <value>Etykieta może zawierać odnośnik do wyszukiwarki portalu dla bieżącego słowa.</value>
   </data>
   <data name="lblTagsLink.Text" xml:space="preserve">
     <value>Etykiety z odnośnikami</value>
@@ -415,7 +376,7 @@
     <value>Sprawdź widoczność adresów URL</value>
   </data>
   <data name="lblTaxMode.Help" xml:space="preserve">
-    <value>Wybierz pomiędzy wszystkimi terminami, a terminami z bieżącej zakładki</value>
+    <value>Wybierz między wszystkimi terminami a terminami z bieżącej zakładki.</value>
   </data>
   <data name="lblTaxMode.Text" xml:space="preserve">
     <value>Wybierz tryb terminów</value>
@@ -425,18 +386,6 @@
   </data>
   <data name="lblTcolor.Text" xml:space="preserve">
     <value>Kolor etykiet</value>
-  </data>
-  <data name="lblTcolor2.Help" xml:space="preserve">
-    <value>Opcjonalny drugi kolor gradientu (tylko Flash)</value>
-  </data>
-  <data name="lblTcolor2.Text" xml:space="preserve">
-    <value>Kolor gradientu Flash</value>
-  </data>
-  <data name="lblTspeed.Help" xml:space="preserve">
-    <value>Pozwala zmienić prędkość sfery. Wartości między 25 a 500 działają najlepiej.</value>
-  </data>
-  <data name="lblTspeed.Text" xml:space="preserve">
-    <value>Prędkość obrotu Flash</value>
   </data>
   <data name="lblWeightMode.Help" xml:space="preserve">
     <value>Metoda wyświetlania wag etykiet chmury Canvas. Rozmiar, kolor lub obie.</value>
@@ -466,19 +415,13 @@
     <value>Dodaj/zmodyfikuj wyłączenia</value>
   </data>
   <data name="lTagSrcActiveforums.Text" xml:space="preserve">
-    <value>Źródło etykiet - aktywne etykiety forumTag Source - Active Forums Tags</value>
+    <value>Źródło etykiet - Etykiety Active Forums</value>
   </data>
   <data name="lTagSrcCustom.Text" xml:space="preserve">
     <value>Źródło etykiet - Własne etykiety</value>
   </data>
-  <data name="lTagSrcDnnBlog.Text" xml:space="preserve">
-    <value>Źródło etykiet - Etykiety blogów</value>
-  </data>
   <data name="lTagSrcOpt.Text" xml:space="preserve">
     <value>Ustawienia źródeł etykiet</value>
-  </data>
-  <data name="lTagSrcReferrals.Text" xml:space="preserve">
-    <value>Źródło etykiet - Etykiety referentów wyszukiwania</value>
   </data>
   <data name="lTagSrcTax.Text" xml:space="preserve">
     <value>Źródło etykiet - Etykiety taksonomii DNN</value>
@@ -507,17 +450,8 @@
   <data name="ModeCustom.Text" xml:space="preserve">
     <value>Własne etykiety</value>
   </data>
-  <data name="ModeDnnblog.Text" xml:space="preserve">
-    <value>Etykiety modułu Blog</value>
-  </data>
   <data name="ModeNewsarticles.Text" xml:space="preserve">
     <value>Etykiety modułu NewsArticles</value>
-  </data>
-  <data name="ModeReferrals.Text" xml:space="preserve">
-    <value>Odniesienia wyszukiwania</value>
-  </data>
-  <data name="ModeSearch.Text" xml:space="preserve">
-    <value>Częste słowa</value>
   </data>
   <data name="ModeSimplegallery.Text" xml:space="preserve">
     <value>Etykiety modułu SimpleGallery</value>
@@ -531,14 +465,11 @@
   <data name="NotSorted.Text" xml:space="preserve">
     <value>Bez sortowania</value>
   </data>
-  <data name="rangevalidator1.Text" xml:space="preserve">
-    <value>Wartość prędkości musi się zawierać między 25 a 500.</value>
-  </data>
   <data name="SaveExWord.Text" xml:space="preserve">
     <value>Zapisz słowo do wyłączenia</value>
   </data>
   <data name="SaveLocale.Text" xml:space="preserve">
-    <value>Zapisz locale</value>
+    <value>Zapisz lokalizację</value>
   </data>
   <data name="SaveTag.Text" xml:space="preserve">
     <value>Zapisz etykietę</value>
@@ -554,9 +485,6 @@
   </data>
   <data name="SearchPageTaxQueryStringLabel.Text" xml:space="preserve">
     <value>Ciąg zapytania dla wyszukiwania z taksonomii</value>
-  </data>
-  <data name="SelectPage.Text" xml:space="preserve">
-    <value>Wybierz stronę</value>
   </data>
   <data name="ShapeLabel.Help" xml:space="preserve">
     <value>Kształt chmury do wyświetlenia.</value>
@@ -593,5 +521,83 @@
   </data>
   <data name="WordCloudOptionsPanelLabel.Text" xml:space="preserve">
     <value>Ustawienia chmury słów (Wordle)</value>
+  </data>
+  <data name="lblWeightSize.Help" xml:space="preserve">
+    <value>Mnożnik dostosowujący rozmiar etykiet, gdy tryb wagi to rozmiar lub oba.</value>
+  </data>
+  <data name="lblWeightSize.Text" xml:space="preserve">
+    <value>Rozmiar wagi Canvas (HTML5)</value>
+  </data>
+  <data name="transparent.Help" xml:space="preserve">
+    <value>Użyj przezroczystego tła zamiast koloru tła.</value>
+  </data>
+  <data name="TagID.Header" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Tag.Header" xml:space="preserve">
+    <value>Etykieta</value>
+  </data>
+  <data name="TagUrl.Header" xml:space="preserve">
+    <value>Adres URL etykiety</value>
+  </data>
+  <data name="Weight.Header" xml:space="preserve">
+    <value>Waga</value>
+  </data>
+  <data name="Locale.Header" xml:space="preserve">
+    <value>Język</value>
+  </data>
+  <data name="EditItem.Text" xml:space="preserve">
+    <value>Edytuj element</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>Usuń element</value>
+  </data>
+  <data name="lblImport.Text" xml:space="preserve">
+    <value>Importuj etykiety</value>
+  </data>
+  <data name="lblExport.Text" xml:space="preserve">
+    <value>Eksportuj etykiety</value>
+  </data>
+  <data name="RenderMode_BasicHtml.Text" xml:space="preserve">
+    <value>Zwykły HTML</value>
+  </data>
+  <data name="RenderMode_Html5.Text" xml:space="preserve">
+    <value>HTML5 Canvas (3D)</value>
+  </data>
+  <data name="RenderMode_WordCloud.Text" xml:space="preserve">
+    <value>Chmura słów</value>
+  </data>
+  <data name="Shape_circle.Text" xml:space="preserve">
+    <value>Okrąg</value>
+  </data>
+  <data name="Shape_cardioid.Text" xml:space="preserve">
+    <value>Kardioida</value>
+  </data>
+  <data name="Shape_diamond.Text" xml:space="preserve">
+    <value>Romb</value>
+  </data>
+  <data name="Shape_triangle_forward.Text" xml:space="preserve">
+    <value>Trójkąt (w prawo)</value>
+  </data>
+  <data name="Shape_triangle.Text" xml:space="preserve">
+    <value>Trójkąt (w górę)</value>
+  </data>
+  <data name="Shape_pentagon.Text" xml:space="preserve">
+    <value>Pięciokąt</value>
+  </data>
+  <data name="Shape_star.Text" xml:space="preserve">
+    <value>Gwiazda</value>
+  </data>
+  <data name="ExcludeType_Contains.Text" xml:space="preserve">
+    <value>Zawiera</value>
+  </data>
+  <data name="ExcludeType_Equals.Text" xml:space="preserve">
+    <value>Równa się</value>
+  </data>
+  <data name="ExcludeType_StartsWith.Text" xml:space="preserve">
+    <value>Zaczyna się od</value>
+  </data>
+  <data name="ExcludeType_EndsWith.Text" xml:space="preserve">
+    <value>Kończy się na</value>
   </data>
 </root>

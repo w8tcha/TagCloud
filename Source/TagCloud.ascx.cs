@@ -1371,17 +1371,6 @@ namespace DNN.Modules
 
             try
             {
-                this.settings.Tcolor2 = (string)moduleSettings["tcolor2"];
-            }
-            finally
-            {
-                this.settings.Tcolor2 = string.IsNullOrEmpty(this.settings.Tcolor2)
-                    ? "0x000000"
-                    : $"0x{this.settings.Tcolor2}";
-            }
-
-            try
-            {
                 this.settings.Hicolor = (string)moduleSettings["hicolor"];
             }
             finally
@@ -1400,18 +1389,6 @@ namespace DNN.Modules
                 this.settings.Bgcolor = string.IsNullOrEmpty(this.settings.Bgcolor)
                     ? "transparent"
                     : $"#{this.settings.Bgcolor}";
-            }
-
-            try
-            {
-                this.settings.Tspeed = (string)moduleSettings["tspeed"];
-            }
-            finally
-            {
-                if (string.IsNullOrEmpty(this.settings.Tspeed))
-                {
-                    this.settings.Tspeed = "75";
-                }
             }
 
             // Load World Cloud Settings only when needed

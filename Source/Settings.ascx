@@ -111,10 +111,6 @@
         <dnn:label id="lblTcolor" runat="server" ResourceKey="lblTcolor" controlname="tbTcolor" suffix=":" CssClass="SubHead"></dnn:label>
         <asp:TextBox id="tbTcolor" runat="server" TextMode="Color" />
     </div>
-    <div class="dnnFormItem">
-        <dnn:label id="lblTcolor2" runat="server" ResourceKey="lblTcolor2" controlname="tbTcolor2" suffix=":" CssClass="SubHead"></dnn:label>
-        <asp:TextBox id="tbTcolor2" runat="server" TextMode="Color" />
-   </div>
    <div class="dnnFormItem">
         <dnn:label id="lblHicolor" runat="server" ResourceKey="lblHicolor" controlname="tbHicolor" suffix=":" CssClass="SubHead"></dnn:label>
         <asp:TextBox id="tbHicolor" runat="server" TextMode="Color" />
@@ -127,11 +123,6 @@
         <dnn:label id="Label1" runat="server" ResourceKey="transparent" controlname="cbTransparent" CssClass="SubHead"></dnn:label>
         <asp:CheckBox id="cbTransparent" runat="server" TextAlign="Right" Text="&nbsp;Transparent?" AutoPostBack="true" />
    </div>
-   <div class="dnnFormItem">
-        <dnn:label id="lblTspeed" runat="server" ResourceKey="lblTspeed" controlname="tbTspeed" suffix=":" CssClass="SubHead"></dnn:label>
-        <asp:TextBox id="tbTspeed" runat="server" Width="50px" TextMode="Number" />
-        <asp:RangeValidator  id="rangevalidator1" runat="server" MinimumValue="25" MaximumValue="500" Type="Integer" ControlToValidate="tbTspeed" ErrorMessage="RangeValidator"></asp:RangeValidator>
-    </div>
     <div class="dnnFormItem">
         <dnn:Label id="lblWeightMode" runat="server" ResourceKey="lblWeightMode" controlname="CanvasWeightMode" suffix=":" CssClass="SubHead"></dnn:Label>
         <asp:DropDownList id="CanvasWeightMode" Width="194px" runat="server"></asp:DropDownList>
@@ -202,7 +193,7 @@
                 <HeaderStyle HorizontalAlign="Center" Width="1%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle HorizontalAlign="left"></ItemStyle>
                 <ItemTemplate>
-                    <asp:ImageButton id="btnEdit" AlternateText="Item bearbeiten" ImageUrl="~/images/edit.gif" CssClass="CommandButton"
+                    <asp:ImageButton id="btnEdit" AlternateText='<%# GetResourceText("EditItem.Text") %>' ImageUrl="~/images/edit.gif" CssClass="CommandButton"
                         runat="server"></asp:ImageButton>
                 </ItemTemplate>
             </asp:TemplateColumn>
@@ -210,7 +201,7 @@
                 <HeaderStyle HorizontalAlign="Center" Width="1%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle HorizontalAlign="left"></ItemStyle>
                 <ItemTemplate>
-                    <asp:ImageButton id="btnDelete" AlternateText="Item löschen" ImageUrl="~/images/delete.gif" CssClass="CommandButton"
+                    <asp:ImageButton id="btnDelete" AlternateText='<%# GetResourceText("DeleteItem.Text") %>' ImageUrl="~/images/delete.gif" CssClass="CommandButton"
                         runat="server"></asp:ImageButton>
                 </ItemTemplate>
             </asp:TemplateColumn>
@@ -218,7 +209,7 @@
                 <HeaderStyle HorizontalAlign="left" Width="10%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle CssClass="Normal"></ItemStyle>
             </asp:BoundColumn>
-            <asp:BoundColumn DataField="TagUrl" SortExpression="TagUrl" ReadOnly="True" HeaderText="Tag URL">
+            <asp:BoundColumn DataField="TagUrl" SortExpression="TagUrl" ReadOnly="True" HeaderText="TagUrl">
                 <HeaderStyle HorizontalAlign="left" Width="10%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle CssClass="Normal"></ItemStyle>
             </asp:BoundColumn>
@@ -275,7 +266,7 @@
                 <HeaderStyle HorizontalAlign="Center" Width="1%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle HorizontalAlign="left"></ItemStyle>
                 <ItemTemplate>
-                    <asp:ImageButton id="btnEdit" AlternateText="Item bearbeiten" ImageUrl="~/images/edit.gif" CssClass="CommandButton"
+                    <asp:ImageButton id="btnEdit" AlternateText='<%# GetResourceText("EditItem.Text") %>' ImageUrl="~/images/edit.gif" CssClass="CommandButton"
                         runat="server"></asp:ImageButton>
                 </ItemTemplate>
             </asp:TemplateColumn>
@@ -283,7 +274,7 @@
                 <HeaderStyle HorizontalAlign="Center" Width="1%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle HorizontalAlign="left"></ItemStyle>
                 <ItemTemplate>
-                    <asp:ImageButton id="btnDelete" AlternateText="Item löschen" ImageUrl="~/images/delete.gif" CssClass="CommandButton"
+                    <asp:ImageButton id="btnDelete" AlternateText='<%# GetResourceText("DeleteItem.Text") %>' ImageUrl="~/images/delete.gif" CssClass="CommandButton"
                         runat="server"></asp:ImageButton>
                 </ItemTemplate>
             </asp:TemplateColumn>
@@ -295,7 +286,7 @@
                 <HeaderStyle HorizontalAlign="left" Width="10%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle CssClass="Normal"></ItemStyle>
             </asp:BoundColumn>
-            <asp:BoundColumn DataField="TagUrl" SortExpression="TagUrl" ReadOnly="True" HeaderText="Tag URL">
+            <asp:BoundColumn DataField="TagUrl" SortExpression="TagUrl" ReadOnly="True" HeaderText="TagUrl">
                 <HeaderStyle HorizontalAlign="left" Width="10%" CssClass="SubHead"></HeaderStyle>
                 <ItemStyle CssClass="Normal"></ItemStyle>
             </asp:BoundColumn>
@@ -308,10 +299,10 @@
     </asp:UpdatePanel>
                  </div>
            <div class="dnnFormItem">
-       <a onclick="showDialog('ImportDialog');" id="lnkImport" href="#" class="dnnPrimaryAction"><asp:Label id="lblImport" runat="server" Text="Import Tags"></asp:Label></a>
+       <a onclick="showDialog('ImportDialog');" id="lnkImport" href="#" class="dnnPrimaryAction"><asp:Label id="lblImport" runat="server" resourcekey="lblImport"></asp:Label></a>
         &nbsp;
-        <a onclick="showDialog('ExportDialog');" id="lnkExport" href="#" class="dnnPrimaryAction"><asp:Label id="lblExport" runat="server" Text="Export Tags"></asp:Label></a>
-        <div id="ImportDialog" title="Import Custom Tags" style="display:none" class="dnnClear">
+        <a onclick="showDialog('ExportDialog');" id="lnkExport" href="#" class="dnnPrimaryAction"><asp:Label id="lblExport" runat="server" resourcekey="lblExport"></asp:Label></a>
+        <div id="ImportDialog" style="display:none" class="dnnClear">
          <asp:UpdatePanel ID="upImport" UpdateMode="Conditional" ChildrenAsTriggers="true" runat="server">
             <ContentTemplate>
                <dnn:url id="ctlImportFile" runat="server" width="300" showtabs="False" Required="False" filefilter="xml" showfiles="True" showUrls="False"
@@ -320,7 +311,7 @@
             </ContentTemplate>
           </asp:UpdatePanel>
         </div>
-        <div id="ExportDialog" title="Export Custom Tags" style="display:none" class="dnnClear">
+        <div id="ExportDialog" style="display:none" class="dnnClear">
          <asp:UpdatePanel ID="upExport" UpdateMode="Conditional" ChildrenAsTriggers="true" runat="server">
             <ContentTemplate>
               <p><asp:DropDownList id="cboFolders" Runat="server" CssClass="NormalTextBox" Width="300"></asp:DropDownList></p>

@@ -118,28 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="mscorlib" name="mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.TrayLargeIcon" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="$this.TrayAutoArrange" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <assembly alias="System" name="System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.DefaultModifiers" type="System.CodeDom.MemberAttributes, System">
-    <value>Private</value>
-  </data>
   <data name="ModuleHelp.Text" xml:space="preserve">
-    <value>&lt;h1&gt;TagCloud &lt;/h1&gt;
-&lt;h2&gt;Copyright(c) Ingo Herbote. All rights reserved. (&lt;a href="https://github.com/w8tcha/TagCloud"&gt;github.com/w8tcha/TagCloud&lt;/a&gt;)&lt;/h2&gt; &lt;p&gt;This Module displays Tags from various sources  as a standard Web 2.0 Tag Cloud.  The Tags are links which linked to the Portal Search to  show all Pages with that Tag.&lt;/p&gt;
-&lt;p&gt; The Tag Cloud can be rendered as HTML5 Canvas 3D Cloud, or Flash 3D Cloud, or as Plain HTML with Skinning  as a list of hyperlinks in varying styles depending on a weight.    This is similar to tag clouds in del.icio.us or Flickr.&lt;/p&gt;</value>
+    <value>&lt;h1&gt;TagCloud&lt;/h1&gt;
+&lt;h2&gt;Copyright (c) Ingo Herbote. Alle Rechte vorbehalten. (&lt;a href="https://github.com/w8tcha/TagCloud"&gt;github.com/w8tcha/TagCloud&lt;/a&gt;)&lt;/h2&gt; &lt;p&gt;Dieses Modul zeigt Tags aus verschiedenen Quellen als klassische Web 2.0 Tag Cloud an. Die Tags verlinken auf die Portal-Suche, um alle Seiten mit diesem Tag anzuzeigen.&lt;/p&gt;
+&lt;p&gt;Die Tag Cloud kann als HTML5 Canvas 3D-Cloud, als Wortwolke oder als einfaches HTML mit Skins dargestellt werden, d. h. als Liste von Links in unterschiedlichen Stilen je nach Gewichtung. Das ähnelt den Tag Clouds auf del.icio.us oder Flickr.&lt;/p&gt;</value>
   </data>
   <data name="CommonWords.Text" xml:space="preserve">
     <value>der,die,und,in,den,von,zu,das,mit,sich</value>
   </data>
   <data name="Manage.Text" xml:space="preserve">
     <value>Cloud Einstellungen</value>
-  </data>
-  <data name="TagFound.Text" xml:space="preserve">
-    <value>Tag "{0}" wurde {1} mal gefunden</value>
   </data>
 </root>

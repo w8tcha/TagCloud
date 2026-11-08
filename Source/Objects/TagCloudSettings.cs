@@ -220,19 +220,9 @@ namespace DNN.Modules.Objects
         public string TagSeparator { get; set; }
 
         /// <summary>
-        /// Gets or sets The  Flash tcolor.
+        /// Gets or sets the tag color.
         /// </summary>
         public string Tcolor { get; set; }
-
-        /// <summary>
-        /// Gets or sets The Flash tcolor 2.
-        /// </summary>
-        public string Tcolor2 { get; set; }
-
-        /// <summary>
-        /// Gets or sets The Flash tspeed.
-        /// </summary>
-        public string Tspeed { get; set; }
 
         /// <summary>
         /// Gets or sets The search tab id.

@@ -492,24 +492,6 @@ namespace DNN.Modules
         protected global::System.Web.UI.WebControls.TextBox tbTcolor;
 
         /// <summary>
-        /// lblTcolor2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UserControl lblTcolor2;
-
-        /// <summary>
-        /// tbTcolor2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox tbTcolor2;
-
-        /// <summary>
         /// lblHicolor control.
         /// </summary>
         /// <remarks>
@@ -562,33 +544,6 @@ namespace DNN.Modules
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox cbTransparent;
-
-        /// <summary>
-        /// lblTspeed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UserControl lblTspeed;
-
-        /// <summary>
-        /// tbTspeed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox tbTspeed;
-
-        /// <summary>
-        /// rangevalidator1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RangeValidator rangevalidator1;
 
         /// <summary>
         /// lblWeightMode control.

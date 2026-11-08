@@ -97,10 +97,8 @@ namespace DNN.Modules
                        sFlashWidth,
                        sFlashHeight,
                        sTcolor = string.Empty,
-                       sTcolor2 = string.Empty,
                        sHicolor = string.Empty,
                        sBgcolor = string.Empty,
-                       sTspeed = string.Empty,
                        sOccurCount,
                        sTagSeparator,
                        sStartDate,
@@ -523,18 +521,6 @@ namespace DNN.Modules
 
                 try
                 {
-                    sTcolor2 = $"0x{moduleSettings["tcolor2"]}";
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sTcolor2))
-                    {
-                        sTcolor2 = "0x000000";
-                    }
-                }
-
-                try
-                {
                     sHicolor = $"0x{moduleSettings["hicolor"]}";
                 }
                 finally
@@ -554,18 +540,6 @@ namespace DNN.Modules
                     if (string.IsNullOrEmpty(sBgcolor) || sBgcolor.Equals("#transparent"))
                     {
                         sBgcolor = "transparent";
-                    }
-                }
-
-                try
-                {
-                    sTspeed = (string)moduleSettings["tspeed"];
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(sTspeed))
-                    {
-                        sTspeed = "75";
                     }
                 }
 
@@ -689,10 +663,8 @@ namespace DNN.Modules
                 sBXml.AppendFormat("<excludeType>{0}</excludeType>", XmlUtils.XMLEncode(sExcludeType));
                 sBXml.AppendFormat("<ExcludeCommon>{0}</ExcludeCommon>", XmlUtils.XMLEncode(sExcludeCommon));
                 sBXml.AppendFormat("<tcolor>{0}</tcolor>", XmlUtils.XMLEncode(sTcolor));
-                sBXml.AppendFormat("<tcolor2>{0}</tcolor2>", XmlUtils.XMLEncode(sTcolor2));
                 sBXml.AppendFormat("<hicolor>{0}</hicolor>", XmlUtils.XMLEncode(sHicolor));
                 sBXml.AppendFormat("<bgcolor>{0}</bgcolor>", XmlUtils.XMLEncode(sBgcolor));
-                sBXml.AppendFormat("<tspeed>{0}</tspeed>", XmlUtils.XMLEncode(sTspeed));
                 sBXml.AppendFormat("<taxmode>{0}</taxmode>", XmlUtils.XMLEncode(sTaxMode));
                 sBXml.AppendFormat("<taxvocabularies>{0}</taxvocabularies>", XmlUtils.XMLEncode(sVocabulary));
 
@@ -828,13 +800,9 @@ namespace DNN.Modules
                     objModules.UpdateTabModuleSetting(
                         TagCloud.CurrentTabModuleId, "tcolor", xmlContent["tcolor"].InnerText);
                     objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tcolor2", xmlContent["tcolor2"].InnerText);
-                    objModules.UpdateTabModuleSetting(
                         TagCloud.CurrentTabModuleId, "hicolor", xmlContent["hicolor"].InnerText);
                     objModules.UpdateTabModuleSetting(
                         TagCloud.CurrentTabModuleId, "bgcolor", xmlContent["bgcolor"].InnerText);
-                    objModules.UpdateTabModuleSetting(
-                        TagCloud.CurrentTabModuleId, "tspeed", xmlContent["tspeed"].InnerText);
 
                     objModules.UpdateTabModuleSetting(
                         TagCloud.CurrentTabModuleId, "TaxMode", xmlContent["taxmode"].InnerText);

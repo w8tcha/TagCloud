@@ -118,33 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.TrayLargeIcon" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="$this.TrayAutoArrange" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <assembly alias="System" name="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.DefaultModifiers" type="System.CodeDom.MemberAttributes, System">
-    <value>Private</value>
-  </data>
   <data name="lblExlusionList.Help" xml:space="preserve">
-    <value>Wörter die aus der TagCloud ausgeschlossen werden</value>
+    <value>Wörter, die aus der TagCloud ausgeschlossen werden</value>
   </data>
   <data name="lblExlusionList.Text" xml:space="preserve">
     <value>Auszuschließende Wörter</value>
   </data>
   <data name="lblTagsCount.Help" xml:space="preserve">
-    <value>Maximale Anzahl der Einträge im TagCloud</value>
+    <value>Maximale Anzahl der Einträge in der TagCloud</value>
   </data>
   <data name="lblTagsCount.Text" xml:space="preserve">
     <value>Max. Anzahl von Tags</value>
   </data>
   <data name="ModuleHelp.Text" xml:space="preserve">
-    <value>Hier können Sie alle Einstellungen für das Modul vornehmen, z.B. können die maximale Anzahl an Wörtern im TagCloud definieren und Wörter definieren die ausgeschlossen werden sollen.</value>
+    <value>Hier können Sie alle Einstellungen für das Modul vornehmen, z. B. die maximale Anzahl an Wörtern in der TagCloud und die Wörter, die ausgeschlossen werden sollen.</value>
   </data>
   <data name="lblTagsLink.Help" xml:space="preserve">
-    <value>Soll der Tag ein Link zur Portal Suche haben?</value>
+    <value>Soll der Tag einen Link zur Portal-Suche haben?</value>
   </data>
   <data name="lblTagsLink.Text" xml:space="preserve">
     <value>Tags Link zur Portal-Suche</value>
@@ -153,13 +144,13 @@
     <value>Hier können Sie einen Wert für die Breite in '%' oder 'px' angeben.</value>
   </data>
   <data name="lblTagsCloudWidth.Text" xml:space="preserve">
-    <value>Tags Cloud Breite</value>
+    <value>Breite der Tag Cloud</value>
   </data>
   <data name="Error.Text" xml:space="preserve">
-    <value>Eintrag muss eine Nummer sein.</value>
+    <value>Wert muss eine Zahl sein.</value>
   </data>
   <data name="AddExWord.Text" xml:space="preserve">
-    <value>Ausschluss Wort hinzufügen</value>
+    <value>Ausschlusswort hinzufügen</value>
   </data>
   <data name="DeleteExWord.Text" xml:space="preserve">
     <value>Ausgewähltes Wort löschen</value>
@@ -168,25 +159,25 @@
     <value>Ausgewähltes Wort bearbeiten</value>
   </data>
   <data name="SaveExWord.Text" xml:space="preserve">
-    <value>Auschluss Wort speichern</value>
+    <value>Ausschlusswort speichern</value>
   </data>
   <data name="lblTagsCloudHeight.Help" xml:space="preserve">
     <value>Hier können Sie einen Wert für die Höhe in '%' oder 'px' angeben.</value>
   </data>
   <data name="lblTagsCloudHeight.Text" xml:space="preserve">
-    <value>Tags Cloud Höhe</value>
+    <value>Höhe der Tag Cloud</value>
   </data>
   <data name="lblBgcolor.Help" xml:space="preserve">
-    <value>Farbe des Hintergrundes, alternativ kann es auch Transparent sein</value>
+    <value>Farbe des Hintergrunds, alternativ kann er auch transparent sein</value>
   </data>
   <data name="lblBgcolor.Text" xml:space="preserve">
     <value>Hintergrundfarbe</value>
   </data>
   <data name="lblHicolor.Help" xml:space="preserve">
-    <value>Optionale Highlightfarbe</value>
+    <value>Optionale Hervorhebungsfarbe, wenn ein Tag ausgewählt ist</value>
   </data>
   <data name="lblHicolor.Text" xml:space="preserve">
-    <value>Highlightfarbe</value>
+    <value>Hervorhebungsfarbe</value>
   </data>
   <data name="lblTcolor.Help" xml:space="preserve">
     <value>Die Schriftfarbe der Tags</value>
@@ -194,29 +185,17 @@
   <data name="lblTcolor.Text" xml:space="preserve">
     <value>Farbe der Tags</value>
   </data>
-  <data name="lblTspeed.Help" xml:space="preserve">
-    <value>Erlaubt die Geschwindigkeit der Sphere zu ändern. Werte zwischen 25-500 sind möglich.</value>
-  </data>
-  <data name="lblTspeed.Text" xml:space="preserve">
-    <value>Flash Drehgeschwindigkeit</value>
-  </data>
   <data name="lCommOpt.Text" xml:space="preserve">
-    <value>Allgemeine Einstellugen</value>
+    <value>Allgemeine Einstellungen</value>
   </data>
   <data name="lFlashOpt.Text" xml:space="preserve">
     <value>3D HTML5/Word Cloud Einstellungen</value>
   </data>
-  <data name="rangevalidator1.Text" xml:space="preserve">
-    <value>Geschwindigkeitswert muss zwischen 25 und 500 liegen.</value>
-  </data>
-  <data name="lblColPic.Text" xml:space="preserve">
-    <value>&lt;-- Klicken Sie auf die Box um eine Farbe zu wählen</value>
-  </data>
   <data name="lblOccurCount.Help" xml:space="preserve">
-    <value>Nur Tags anzeigen die mindestens x Mal vorkommen</value>
+    <value>Nur Tags anzeigen, die mindestens x-mal vorkommen</value>
   </data>
   <data name="lblOccurCount.Text" xml:space="preserve">
-    <value>Minimales Tag Gewicht</value>
+    <value>Minimales Tag-Gewicht</value>
   </data>
   <data name="AddTag.Text" xml:space="preserve">
     <value>Neuen Tag erstellen</value>
@@ -224,58 +203,55 @@
   <data name="DeleteTag.Text" xml:space="preserve">
     <value>Ausgewählten Tag löschen?</value>
   </data>
-  <data name="EditTag.Text" xml:space="preserve">
-    <value>Einen aus der Liste gewählten Tag editieren.</value>
-  </data>
   <data name="lblCustomTags.Help" xml:space="preserve">
-    <value>Erstellen und bearbeiten der eigenen Tags. Definieren Sie für jeden Tag ein Tag Größe und eine URL.</value>
+    <value>Eigene Tags erstellen und bearbeiten. Definieren Sie für jeden Tag ein Gewicht und eine URL.</value>
   </data>
   <data name="lblCustomTags.Text" xml:space="preserve">
-    <value>Eigene Tagslisten</value>
+    <value>Eigene Tag-Liste</value>
   </data>
   <data name="lblTagMode.Help" xml:space="preserve">
-    <value>Wählen Sie zwischen Tags generiert aus den Sucheinträgen oder definieren Sie ihre eigene Tagsliste.</value>
+    <value>Wählen Sie zwischen Tags, die aus den Sucheinträgen generiert werden, oder definieren Sie Ihre eigene Tag-Liste.</value>
   </data>
   <data name="lblTagMode.Text" xml:space="preserve">
     <value>Tagmodus wählen</value>
   </data>
   <data name="lblCustomTag.Help" xml:space="preserve">
-    <value>Neuen Tag erstellen oder bearbeiten und spezifizieren sie einen Tagnamen, das Gewicht und eine URL.</value>
+    <value>Tag erstellen oder bearbeiten und Tag-Namen, Gewicht und URL festlegen.</value>
   </data>
   <data name="lblCustomTag.Text" xml:space="preserve">
-    <value>Tab bearbeiten/erstellen</value>
+    <value>Tag erstellen/bearbeiten</value>
   </data>
   <data name="SaveTag.Text" xml:space="preserve">
     <value>Tag speichern</value>
   </data>
   <data name="lblTagsLinkChk.Help" xml:space="preserve">
-    <value>Tag Url überprüfen, ob der Aktuelle Benutzer Zugang zu der Seite hat, ansonsten wird der Tag nicht angezeigt. </value>
+    <value>Prüft, ob der aktuelle Benutzer Zugriff auf die Seite des Tags hat, ansonsten wird der Tag nicht angezeigt.</value>
   </data>
   <data name="lblTagsLinkChk.Text" xml:space="preserve">
-    <value>Urlsichtbarkeit überprüfen</value>
+    <value>URL-Sichtbarkeit überprüfen</value>
   </data>
   <data name="lCustomTag.Text" xml:space="preserve">
     <value>Tagname:</value>
   </data>
   <data name="lTagUrl.Text" xml:space="preserve">
-    <value>Tag Url:</value>
+    <value>Tag-URL:</value>
   </data>
   <data name="lTagWeight.Text" xml:space="preserve">
-    <value>Tag Gewicht:</value>
+    <value>Tag-Gewicht:</value>
   </data>
   <data name="cmdExport.Text" xml:space="preserve">
-    <value>Exportiere Eigene Tags</value>
+    <value>Eigene Tags exportieren</value>
   </data>
   <data name="cmdImport.Text" xml:space="preserve">
-    <value>Importiere Eigene Tags</value>
+    <value>Eigene Tags importieren</value>
   </data>
   <data name="lblSkin.Help" xml:space="preserve">
-    <value>Ein Skin für die Html (ohne Flash) TagCloud kann hier definiert werden.</value>
+    <value>Hier kann ein Skin für die HTML-TagCloud festgelegt werden.</value>
   </data>
   <data name="lblSkin.Text" xml:space="preserve">
-    <value>Html TagCloud Skin</value>
+    <value>HTML-TagCloud-Skin</value>
   </data>
-  <data name="ControlTitle_settings.Text" xml:space="preserve">
+  <data name="ControlTitle_edit.Text" xml:space="preserve">
     <value>TagCloud Einstellungen</value>
   </data>
   <data name="AllTerms.Text" xml:space="preserve">
@@ -288,202 +264,160 @@
     <value>Tags sortieren</value>
   </data>
   <data name="lblTagSeparator.Help" xml:space="preserve">
-    <value>Definieren sie einen Separator zwischen jeden Tag, z.B.: ein '|'.</value>
+    <value>Definieren Sie ein Trennzeichen zwischen den Tags, z. B. ein '|'.</value>
   </data>
   <data name="lblTagSeparator.Text" xml:space="preserve">
-    <value>Tag Trenner</value>
+    <value>Tag-Trennzeichen</value>
   </data>
   <data name="lblTaxMode.Help" xml:space="preserve">
-    <value>Wählen Sie zwischen Allen Terms oder nur den Terms der aktuellen Seite.</value>
+    <value>Wählen Sie zwischen allen Terms oder nur den Terms der aktuellen Seite.</value>
   </data>
   <data name="lblTaxMode.Text" xml:space="preserve">
     <value>Terms Modus</value>
   </data>
   <data name="TabTerms.Text" xml:space="preserve">
-    <value>Terms des Aktueller Seite anzeigen</value>
+    <value>Terms der aktuellen Seite anzeigen</value>
   </data>
   <data name="CustomVocabulary.Text" xml:space="preserve">
     <value>Vokabular wählen</value>
   </data>
   <data name="lblChooseVoc.Help" xml:space="preserve">
-    <value>Markieren Sie von welchen Vokabularien die Terms als Tags angezeigt werden sollen.</value>
+    <value>Wählen Sie, aus welchen Vokabularen die Terms als Tags angezeigt werden sollen.</value>
   </data>
   <data name="lblChooseVoc.Text" xml:space="preserve">
     <value>Vokabulare auswählen</value>
   </data>
   <data name="SaveLocale.Text" xml:space="preserve">
-    <value>Lokale Speichern</value>
+    <value>Lokalisierung speichern</value>
   </data>
   <data name="ShowLocalize.Text" xml:space="preserve">
-    <value>Zeige Lokalisierungen</value>
+    <value>Lokalisierungen anzeigen</value>
   </data>
   <data name="DeleteLocale.Text" xml:space="preserve">
     <value>Ausgewählte Lokalisierung löschen?</value>
   </data>
-  <data name="lblEndDate.Help" xml:space="preserve">
-    <value>Enddatum ist immer heute</value>
-  </data>
-  <data name="lblEndDate.Text" xml:space="preserve">
-    <value>Enddatum</value>
-  </data>
-  <data name="lblStartDate.Help" xml:space="preserve">
-    <value>Definieren sie das Startdatum, von welchesm Zeitraum die Referrers aus dem Sitelog gehohlt werden sollen.</value>
-  </data>
-  <data name="lblStartDate.Text" xml:space="preserve">
-    <value>Startdatum</value>
-  </data>
   <data name="lblModuleVentrianNews.Help" xml:space="preserve">
-    <value>Wählen Sie die Modul Instanz, falls auf der gewählten Seite eine gefunden wurde.</value>
+    <value>Wählen Sie die Modulinstanz, falls auf der gewählten Seite eine gefunden wurde.</value>
   </data>
   <data name="lblModuleVentrianNews.Text" xml:space="preserve">
-    <value>News Articles Modul Instanz wählen</value>
-  </data>
-  <data name="SelectPage.Text" xml:space="preserve">
-    <value>Seite auswählen</value>
+    <value>News Articles Modulinstanz wählen</value>
   </data>
   <data name="Error_1.Text" xml:space="preserve">
-    <value>Wrt muss 150px oder höher sein.</value>
+    <value>Wert muss 150px oder höher sein.</value>
   </data>
   <data name="lblRenderUl.Help" xml:space="preserve">
-    <value>Html Tag Cloud als Unordered List (UL) generieren</value>
+    <value>HTML-TagCloud als ungeordnete Liste (UL) generieren</value>
   </data>
   <data name="lblRenderUl.Text" xml:space="preserve">
-    <value>UL Generieren</value>
+    <value>Als UL generieren</value>
   </data>
   <data name="Error_2.Text" xml:space="preserve">
-    <value>Wert muss  25% oder höher sein.</value>
+    <value>Wert muss 25% oder höher sein.</value>
   </data>
   <data name="Error_3.Text" xml:space="preserve">
     <value>Wert kann nicht höher als 100% sein.</value>
   </data>
   <data name="lblFlashHeight.Help" xml:space="preserve">
-    <value>Hier können Sie einen Wert für die Cloud Höhe in  'px' angeben.</value>
+    <value>Hier können Sie einen Wert für die Höhe der Cloud in 'px' angeben.</value>
   </data>
   <data name="lblFlashHeight.Text" xml:space="preserve">
-    <value>Cloud Höhe</value>
+    <value>Cloud-Höhe</value>
   </data>
   <data name="lblFlashWidth.Help" xml:space="preserve">
-    <value>Hier können Sie einen Wert für die Cloud Breite in 'px' angeben.</value>
+    <value>Hier können Sie einen Wert für die Breite der Cloud in 'px' angeben.</value>
   </data>
   <data name="lblFlashWidth.Text" xml:space="preserve">
-    <value>Cloud Breite</value>
-  </data>
-  <data name="cbCurrentEndDate.Text" xml:space="preserve">
-    <value>Immer aktuelles Datum als Enddatum verwenden</value>
-  </data>
-  <data name="lblPortalId.Help" xml:space="preserve">
-    <value>Hier können Sie die Portal Id definieren von dem Resultate angezeigt werden sollen</value>
+    <value>Cloud-Breite</value>
   </data>
   <data name="lblCacheItems.Help" xml:space="preserve">
-    <value>Wenn die Tags gecached werden müssen sie nicht jedes mal wenn die Seite geladen wird neu generiert werden. Das Kann die Seitenladezeit verkürzen. (Wenn Urlsichtbarkeit überprüfen aktiviert ist, ist das Cachen deaktiviert)</value>
+    <value>Wenn die Tags gecacht werden, müssen sie nicht bei jedem Seitenaufruf neu generiert werden. Das kann die Ladezeit der Seite verkürzen. (Wenn "URL-Sichtbarkeit überprüfen" aktiviert ist, ist das Caching deaktiviert.)</value>
   </data>
   <data name="lblCacheItems.Text" xml:space="preserve">
-    <value>Tags Cachen</value>
+    <value>Tags cachen</value>
   </data>
   <data name="lblModuleActiveforums.Help" xml:space="preserve">
-    <value>Wählen Sie die Modul Instanz, falls auf der gewählten Seite eine gefunden wurde.</value>
+    <value>Wählen Sie die Modulinstanz, falls auf der gewählten Seite eine gefunden wurde.</value>
   </data>
   <data name="lblModuleActiveforums.Text" xml:space="preserve">
-    <value>Active Forums Modul Instanz wählen</value>
+    <value>Active Forums Modulinstanz wählen</value>
   </data>
   <data name="lblModuleVentrianSimple.Help" xml:space="preserve">
-    <value>Wählen Sie die Modul Instanz, falls auf der gewählten Seite eine gefunden wurde.</value>
+    <value>Wählen Sie die Modulinstanz, falls auf der gewählten Seite eine gefunden wurde.</value>
   </data>
   <data name="lblModuleVentrianSimple.Text" xml:space="preserve">
-    <value>Simple Gallery Modul Instanz wählen</value>
+    <value>Simple Gallery Modulinstanz wählen</value>
   </data>
   <data name="lTagSrcOpt.Text" xml:space="preserve">
-    <value>Tags Source Einstellungen</value>
-  </data>
-  <data name="checkAllBlogs.Text" xml:space="preserve">
-    <value>Alle Blogs verwenden</value>
-  </data>
-  <data name="lblModuleDnnBlog.Help" xml:space="preserve">
-    <value>Wählen Sie die Modul Instanz, falls auf der gewählten Seite eine gefunden wurde.</value>
-  </data>
-  <data name="lblModuleDnnBlog.Text" xml:space="preserve">
-    <value>DotNetNuke Blog Modul Instanz wählen</value>
-  </data>
-  <data name="lblSelectBlogs.Help" xml:space="preserve">
-    <value>Wählen Sie welche Blogs sie verwenden möchten. Oder Wählen Sie "Alle Blogs verwenden" um immer alle Blogs zu verwenden.</value>
-  </data>
-  <data name="lblSelectBlogs.Text" xml:space="preserve">
-    <value>Blogs auswählen</value>
+    <value>Tag-Quellen-Einstellungen</value>
   </data>
   <data name="lTagSrcActiveforums.Text" xml:space="preserve">
-    <value>Tag Quelle - Active Forums Tags</value>
+    <value>Tag-Quelle - Active Forums Tags</value>
   </data>
   <data name="lTagSrcCustom.Text" xml:space="preserve">
-    <value>Tag Quelle - Custom Tags</value>
-  </data>
-  <data name="lTagSrcDnnBlog.Text" xml:space="preserve">
-    <value>Tag Quelle - DotNetNuke Blog Tags</value>
-  </data>
-  <data name="lTagSrcReferrals.Text" xml:space="preserve">
-    <value>Tag Quelle - Search Referrals Tags</value>
+    <value>Tag-Quelle - Eigene Tags</value>
   </data>
   <data name="lTagSrcTax.Text" xml:space="preserve">
-    <value>Tag Quelle - DotNetNuke Taxonomy Tags</value>
+    <value>Tag-Quelle - DotNetNuke Taxonomie Tags</value>
   </data>
   <data name="lTagSrcVentrianNews.Text" xml:space="preserve">
-    <value>Tag Quelle - News Articles Tags</value>
+    <value>Tag-Quelle - News Articles Tags</value>
   </data>
   <data name="lTagSrcVentrianSimple.Text" xml:space="preserve">
-    <value>Tag Quelle - Simple Gallery Tags</value>
+    <value>Tag-Quelle - Simple Gallery Tags</value>
   </data>
   <data name="lblExlusionType.Help" xml:space="preserve">
-    <value>Wählen Sie, wie das Ausschließen Wort  dem Tag Wort entspricht entweder Gleich ist, Das Wort enthält, beginnt mit dem Wort oder Endet  mit dem Wort.</value>
+    <value>Wählen Sie, wie das Ausschlusswort mit dem Tag verglichen wird: ist gleich, enthält, beginnt mit oder endet mit.</value>
   </data>
   <data name="lblExlusionType.Text" xml:space="preserve">
-    <value>Ausschluss Worttyp</value>
+    <value>Art des Ausschlusses</value>
   </data>
   <data name="lblRenderMode.Help" xml:space="preserve">
-    <value>Wählen Sie wie die Cloud dargestellt werden soll, wählen Sie zwischen, Html5, oder Basic HTML</value>
+    <value>Wählen Sie, wie die Cloud dargestellt werden soll: BasicHtml (einfaches HTML), Html5 (3D-Canvas) oder WordCloud.</value>
   </data>
   <data name="lblRenderMode.Text" xml:space="preserve">
     <value>Darstellungsmodus</value>
   </data>
   <data name="lExcludeOpt.Text" xml:space="preserve">
-    <value>Ausschlusswörter Einstellungen</value>
+    <value>Einstellungen für Ausschlusswörter</value>
   </data>
   <data name="lblRenderItemWeight.Help" xml:space="preserve">
-    <value>Die Aktivierung dieser Eigenschaft  zeigt eine Zahl neben jedem Tag mit dem Gewicht des tags.</value>
+    <value>Wenn aktiviert, wird neben jedem Tag eine Zahl mit seinem Gewicht angezeigt.</value>
   </data>
   <data name="lblRenderItemWeight.Text" xml:space="preserve">
-    <value>Tag Gewicht darstellen</value>
+    <value>Tag-Gewicht anzeigen</value>
   </data>
   <data name="lFilterOpt.Text" xml:space="preserve">
-    <value>Filterung &amp; Sortierungungseinstellungen</value>
+    <value>Filter- &amp; Sortiereinstellungen</value>
   </data>
   <data name="lLinkOpt.Text" xml:space="preserve">
-    <value>Tag Link Einstellungen</value>
+    <value>Tag-Link-Einstellungen</value>
   </data>
   <data name="Cancel.Text" xml:space="preserve">
-    <value>Editieren Abbrechen</value>
+    <value>Bearbeiten abbrechen</value>
   </data>
   <data name="lblExcludeWord.Help" xml:space="preserve">
-    <value>Geben Sie ein Wort ein das von der TagCloud aussgeschlossen werden soll.</value>
+    <value>Geben Sie ein Wort ein, das aus der TagCloud ausgeschlossen werden soll.</value>
   </data>
   <data name="lblExcludeWord.Text" xml:space="preserve">
     <value>Ausschlusswort</value>
   </data>
   <data name="lModifyWord.Text" xml:space="preserve">
-    <value>Ausschlusswort Hinzufügen / Bearbeiten</value>
+    <value>Ausschlusswort hinzufügen / bearbeiten</value>
   </data>
   <data name="lblExcludeCommon.Help" xml:space="preserve">
-    <value>Häufige Wörter in aktueller Sprache ausschließen, die Häufigen Wörter sind in den Sprachdateien gespeichert.</value>
+    <value>Häufige Wörter der aktuellen Sprache ausschließen. Die häufigen Wörter sind in den Sprachdateien gespeichert.</value>
   </data>
   <data name="lblExcludeCommon.Text" xml:space="preserve">
-    <value>Häufige Wörter Ausschliessen</value>
+    <value>Häufige Wörter ausschließen</value>
   </data>
   <data name="lblFontFamily.Help" xml:space="preserve">
-    <value>Schriftart für die Wörter innerhalb der HTML 5 Canvas Wolke</value>
+    <value>Schriftart für die Tags innerhalb der HTML5 Canvas Cloud</value>
   </data>
   <data name="lblFontFamily.Text" xml:space="preserve">
     <value>Canvas (HTML5) Text Schriftart</value>
   </data>
   <data name="lblWeightMode.Help" xml:space="preserve">
-    <value>Methode für die Sortierung der Wörter in der HTML 5 Canvas Wolke. Sollte eine Größe (size), Farbe (colour) oder beides sein (both).</value>
+    <value>Methode zur Darstellung der Tag-Gewichtung in der Canvas Cloud: Größe (size), Farbe (colour) oder beides (both).</value>
   </data>
   <data name="lblWeightMode.Text" xml:space="preserve">
     <value>Canvas (HTML5) Gewichtsmodus</value>
@@ -504,25 +438,16 @@
     <value>ActiveForums Tags</value>
   </data>
   <data name="ModeCustom.Text" xml:space="preserve">
-    <value>Custom Tags</value>
-  </data>
-  <data name="ModeDnnblog.Text" xml:space="preserve">
-    <value>Dnn Blog Tags</value>
+    <value>Eigene Tags</value>
   </data>
   <data name="ModeNewsarticles.Text" xml:space="preserve">
     <value>NewsArticles Tags</value>
-  </data>
-  <data name="ModeReferrals.Text" xml:space="preserve">
-    <value>Search Referrals</value>
-  </data>
-  <data name="ModeSearch.Text" xml:space="preserve">
-    <value>Common Words</value>
   </data>
   <data name="ModeSimplegallery.Text" xml:space="preserve">
     <value>SimpleGallery Tags</value>
   </data>
   <data name="ModeTax.Text" xml:space="preserve">
-    <value>Taxonomy</value>
+    <value>Taxonomie</value>
   </data>
   <data name="NotSorted.Text" xml:space="preserve">
     <value>Nicht sortiert</value>
@@ -531,7 +456,7 @@
     <value>Größe</value>
   </data>
   <data name="transparent.Text" xml:space="preserve">
-    <value>Durchsichtbar?</value>
+    <value>Transparent?</value>
   </data>
   <data name="WeightedAsc.Text" xml:space="preserve">
     <value>Nach Gewicht aufsteigend</value>
@@ -543,13 +468,13 @@
     <value>Tags exportiert!</value>
   </data>
   <data name="EllipticityLabel.Help" xml:space="preserve">
-    <value>Elliptizität des Kreis, der durch das Wort gebildet.</value>
+    <value>Elliptizität des Kreises, der durch die Wörter gebildet wird.</value>
   </data>
   <data name="EllipticityLabel.Text" xml:space="preserve">
-    <value>Kreis Elliptizität</value>
+    <value>Elliptizität des Kreises</value>
   </data>
   <data name="FillBoxLabel.Help" xml:space="preserve">
-    <value>True will mark the entire box containing the word as filled - no subsequent smaller words can be fit in the gap.</value>
+    <value>Wenn aktiviert, wird die gesamte Box um ein Wort als belegt markiert, sodass keine kleineren Wörter in die Lücken gesetzt werden.</value>
   </data>
   <data name="GridSizeLabel.Help" xml:space="preserve">
     <value>Ein höherer Wert bedeutet einen größeren Abstand zwischen den Wörtern</value>
@@ -558,19 +483,19 @@
     <value>Rastergröße</value>
   </data>
   <data name="MinSizeLabel.Help" xml:space="preserve">
-    <value>Minmale Schriftgröße in Pixeln (0 um zu deaktivieren).</value>
+    <value>Minimale Schriftgröße in Pixeln (0 zum Deaktivieren).</value>
   </data>
   <data name="MinSizeLabel.Text" xml:space="preserve">
     <value>Min. Schriftgröße</value>
   </data>
   <data name="ShapeLabel.Help" xml:space="preserve">
-    <value>Wählen Sie eine Form wie die Cloud dargestellt werden soll.</value>
+    <value>Die Form, in der die Cloud dargestellt wird.</value>
   </data>
   <data name="ShapeLabel.Text" xml:space="preserve">
     <value>WordCloud Form</value>
   </data>
   <data name="WeightFactorLabel.Help" xml:space="preserve">
-    <value>Ein höherer Wert bedeutet größerer Text.</value>
+    <value>Ein höherer Wert bedeutet größeren Text.</value>
   </data>
   <data name="WeightFactorLabel.Text" xml:space="preserve">
     <value>Gewichtsfaktor</value>
@@ -579,21 +504,102 @@
     <value>WordCloud (Wordle) Einstellungen</value>
   </data>
   <data name="CustomSearchPageLabel.Help" xml:space="preserve">
-    <value>Search Page where the Search Results will be displayed when clicking on a Tag</value>
+    <value>Suchseite, auf der die Suchergebnisse beim Klick auf einen Tag angezeigt werden.</value>
   </data>
   <data name="CustomSearchPageLabel.Text" xml:space="preserve">
-    <value>Portal Suchseite</value>
+    <value>Portal-Suchseite</value>
   </data>
   <data name="SearchPageQueryStringLabel.Help" xml:space="preserve">
-    <value>Abfragezeichenreihenfolge für die Suchseite</value>
+    <value>Der Query String für die Suchseite.</value>
   </data>
   <data name="SearchPageQueryStringLabel.Text" xml:space="preserve">
-    <value>Such Abfragezeichenfolge</value>
+    <value>Query String der Suchseite</value>
   </data>
   <data name="SearchPageTaxQueryStringLabel.Help" xml:space="preserve">
-    <value>Abfragezeichenreihenfolge für die Suchseite für Taxonomy Terms</value>
+    <value>Der Query String für die Suchseite bei der Suche nach Taxonomie-Tags.</value>
   </data>
   <data name="SearchPageTaxQueryStringLabel.Text" xml:space="preserve">
-    <value>Tax Such Abfragezeichenfolge</value>
+    <value>Taxonomie Query String der Suchseite</value>
+  </data>
+  <data name="FillBoxLabel.Text" xml:space="preserve">
+    <value>Box füllen</value>
+  </data>
+  <data name="lblWeightSize.Help" xml:space="preserve">
+    <value>Multiplikator zur Anpassung der Tag-Größe, wenn der Gewichtsmodus Größe oder beides ist.</value>
+  </data>
+  <data name="lblWeightSize.Text" xml:space="preserve">
+    <value>Canvas (HTML5) Gewichtsgröße</value>
+  </data>
+  <data name="transparent.Help" xml:space="preserve">
+    <value>Einen transparenten Hintergrund statt einer Hintergrundfarbe verwenden.</value>
+  </data>
+  <data name="TagID.Header" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Tag.Header" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="TagUrl.Header" xml:space="preserve">
+    <value>Tag-URL</value>
+  </data>
+  <data name="Weight.Header" xml:space="preserve">
+    <value>Gewicht</value>
+  </data>
+  <data name="Locale.Header" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="EditItem.Text" xml:space="preserve">
+    <value>Eintrag bearbeiten</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>Eintrag löschen</value>
+  </data>
+  <data name="lblImport.Text" xml:space="preserve">
+    <value>Tags importieren</value>
+  </data>
+  <data name="lblExport.Text" xml:space="preserve">
+    <value>Tags exportieren</value>
+  </data>
+  <data name="RenderMode_BasicHtml.Text" xml:space="preserve">
+    <value>Einfaches HTML</value>
+  </data>
+  <data name="RenderMode_Html5.Text" xml:space="preserve">
+    <value>HTML5 Canvas (3D)</value>
+  </data>
+  <data name="RenderMode_WordCloud.Text" xml:space="preserve">
+    <value>Wortwolke</value>
+  </data>
+  <data name="Shape_circle.Text" xml:space="preserve">
+    <value>Kreis</value>
+  </data>
+  <data name="Shape_cardioid.Text" xml:space="preserve">
+    <value>Kardioide</value>
+  </data>
+  <data name="Shape_diamond.Text" xml:space="preserve">
+    <value>Raute</value>
+  </data>
+  <data name="Shape_triangle_forward.Text" xml:space="preserve">
+    <value>Dreieck (nach rechts)</value>
+  </data>
+  <data name="Shape_triangle.Text" xml:space="preserve">
+    <value>Dreieck (nach oben)</value>
+  </data>
+  <data name="Shape_pentagon.Text" xml:space="preserve">
+    <value>Fünfeck</value>
+  </data>
+  <data name="Shape_star.Text" xml:space="preserve">
+    <value>Stern</value>
+  </data>
+  <data name="ExcludeType_Contains.Text" xml:space="preserve">
+    <value>Enthält</value>
+  </data>
+  <data name="ExcludeType_Equals.Text" xml:space="preserve">
+    <value>Ist gleich</value>
+  </data>
+  <data name="ExcludeType_StartsWith.Text" xml:space="preserve">
+    <value>Beginnt mit</value>
+  </data>
+  <data name="ExcludeType_EndsWith.Text" xml:space="preserve">
+    <value>Endet mit</value>
   </data>
 </root>
