@@ -157,7 +157,7 @@
     <!-- DNN 10.4.1 is compiled against 10.0.12, but its packages only declare 8.0.0; pin it to avoid version conflicts -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" ExcludeAssets="runtime" />
     <PackageReference Include="SonarAnalyzer.CSharp">
-      <Version>10.35.0.4138</Version>
+      <Version>10.36.0.15337</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
