@@ -155,7 +155,7 @@
     <PackageReference Include="DotNetNuke.Web" Version="10.4.1" ExcludeAssets="runtime" />
     <PackageReference Include="DotNetNuke.Web.Client" Version="10.4.1" ExcludeAssets="runtime" />
     <!-- DNN 10.4.1 is compiled against 10.0.12, but its packages only declare 8.0.0; pin it to avoid version conflicts -->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" ExcludeAssets="runtime" />
     <PackageReference Include="SonarAnalyzer.CSharp">
       <Version>10.35.0.4138</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
